@@ -1,0 +1,59 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+sourceSets {
+	main.java.srcDir 'source'
+}
+
+dependencies {
+	compile group: 'com.google.guava', name: 'guava', version: '19.0'
+	compile group: 'org.apache.ant', name: 'ant', version: '1.9.6'
+}
+
+task types(type: JavaExec, dependsOn: classes) {
+  description 'Dumps the config types'
+  main = 'net.openrs.cache.tools.TypeDumper'
+  classpath sourceSets.main.runtimeClasspath
+}
+
+task maps(type: JavaExec, dependsOn: classes) {
+  description 'Dumps the maps'
+  main = 'net.openrs.cache.tools.MapDumper'
+  classpath sourceSets.main.runtimeClasspath
+}
+
+task models(type: JavaExec, dependsOn: classes) {
+  description 'Dumps the models'
+  main = 'net.openrs.cache.tools.ModelDumper'
+  classpath sourceSets.main.runtimeClasspath
+}
+
+task sprites(type: JavaExec, dependsOn: classes) {
+  description 'Dumps the sprites'
+  main = 'net.openrs.cache.tools.SpriteDumper'
+  classpath sourceSets.main.runtimeClasspath
+}
+
+task image(type: JavaExec, dependsOn: classes) {
+  description 'Dumps the map image'
+  main = 'net.openrs.cache.tools.MapImageDumper'
+  classpath sourceSets.main.runtimeClasspath
+}
+
+task aggregate(type: JavaExec, dependsOn: classes) {
+  description 'Checks between two caches for repacking files'
+  main = 'net.openrs.cache.tools.CacheAggregator'
+  classpath sourceSets.main.runtimeClasspath
+}
+
+task defragment(type: JavaExec, dependsOn: classes) {
+  description 'Defragments the cache'
+  main = 'net.openrs.cache.tools.CacheDefragmenter'
+  classpath sourceSets.main.runtimeClasspath
+}

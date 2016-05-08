@@ -1,0 +1,16 @@
+/bin/
+/build/
+/.gradle/
+/.settings/
+/bytecode/
+/repository/cache/
+/repository/cache-other/
+/repository/cache-tmp/
+/repository/maps/
+/repository/models/
+/repository/sprites/
+/repository/textures/
+/repository/types/
+/repository/xtea/
+/map_image.png
+/underlay_image.png
