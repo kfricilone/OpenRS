@@ -94,6 +94,12 @@ public class VarPlayerTypeList implements TypeList<VarPlayerType> {
 
 	@Override
 	public void print() {
+	      File dir = new File(Constants.TYPE_PATH);
+
+	      if (!dir.exists()) {
+	            dir.mkdir();
+	      }
+	      
 		File file = new File(Constants.TYPE_PATH, "varplayers.txt");
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
 			Arrays.stream(varPlayers).filter(Objects::nonNull).forEach((VarPlayerType t) -> {

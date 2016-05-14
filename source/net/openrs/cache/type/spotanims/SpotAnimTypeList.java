@@ -96,6 +96,13 @@ public class SpotAnimTypeList implements TypeList<SpotAnimType> {
 
 	@Override
 	public void print() {
+	      
+	      File dir = new File(Constants.TYPE_PATH);
+
+	      if (!dir.exists()) {
+	            dir.mkdir();
+	      }
+	      
 		File file = new File(Constants.TYPE_PATH, "spotanims.txt");
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
 			Arrays.stream(spots).filter(Objects::nonNull).forEach((SpotAnimType t) -> {

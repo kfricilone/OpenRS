@@ -93,6 +93,13 @@ public class InvTypeList implements TypeList<InvType> {
 
 	@Override
 	public void print() {
+	      
+	      File dir = new File(Constants.TYPE_PATH);
+
+	      if (!dir.exists()) {
+	            dir.mkdir();
+	      }
+	      
 		File file = new File(Constants.TYPE_PATH, "invs.txt");
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
 			Arrays.stream(invs).filter(Objects::nonNull).forEach((InvType t) -> {

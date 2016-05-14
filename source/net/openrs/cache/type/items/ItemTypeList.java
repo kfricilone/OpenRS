@@ -104,6 +104,13 @@ public class ItemTypeList implements TypeList<ItemType> {
 
 	@Override
 	public void print() {
+	      
+	      File dir = new File(Constants.TYPE_PATH);
+
+	      if (!dir.exists()) {
+	            dir.mkdir();
+	      }
+	      
 		File file = new File(Constants.TYPE_PATH, "items.txt");
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
 			Arrays.stream(items).filter(Objects::nonNull).forEach((ItemType t) -> {

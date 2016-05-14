@@ -49,6 +49,13 @@ public class SpriteDumper {
 
 				Container container = cache.read(8, i);
 				Sprite sprite = Sprite.decode(container.getData());
+				
+        File dir = new File(Constants.SPRITE_PATH);
+        
+        if (!dir.exists()) {
+              dir.mkdir();
+        }
+				
 				for (int frame = 0; frame < sprite.size(); frame++) {
 					File file = new File(Constants.SPRITE_PATH, i + "_" + frame + ".png");
 					BufferedImage image = sprite.getFrame(frame);

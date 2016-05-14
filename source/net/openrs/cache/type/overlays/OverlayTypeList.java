@@ -94,6 +94,13 @@ public class OverlayTypeList implements TypeList<OverlayType> {
 
 	@Override
 	public void print() {
+	      
+	      File dir = new File(Constants.TYPE_PATH);
+
+	      if (!dir.exists()) {
+	            dir.mkdir();
+	      }
+	      
 		File file = new File(Constants.TYPE_PATH, "overlays.txt");
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
 			Arrays.stream(lays).filter(Objects::nonNull).forEach((OverlayType t) -> {
