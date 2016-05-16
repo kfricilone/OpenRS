@@ -94,6 +94,12 @@ public class VarBitTypeList implements TypeList<VarBitType> {
 
 	@Override
 	public void print() {
+	      File dir = new File(Constants.TYPE_PATH);
+
+	      if (!dir.exists()) {
+	            dir.mkdir();
+	      }
+	      
 		File file = new File(Constants.TYPE_PATH, "varbits.txt");
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
 			Arrays.stream(varBits).filter(Objects::nonNull).forEach((VarBitType t) -> {

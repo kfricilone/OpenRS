@@ -94,6 +94,13 @@ public class VarClientTypeList implements TypeList<VarClientType> {
 
 	@Override
 	public void print() {
+	      
+	      File dir = new File(Constants.TYPE_PATH);
+
+	      if (!dir.exists()) {
+	            dir.mkdir();
+	      }
+	      
 		File file = new File(Constants.TYPE_PATH, "varclients.txt");
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
 			Arrays.stream(varClients).filter(Objects::nonNull).forEach((VarClientType t) -> {

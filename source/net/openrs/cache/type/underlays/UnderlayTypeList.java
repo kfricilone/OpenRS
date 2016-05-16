@@ -94,6 +94,12 @@ public class UnderlayTypeList implements TypeList<UnderlayType> {
 
 	@Override
 	public void print() {
+	      File dir = new File(Constants.TYPE_PATH);
+
+	      if (!dir.exists()) {
+	            dir.mkdir();
+	      }
+	      
 		File file = new File(Constants.TYPE_PATH, "underlays.txt");
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
 			Arrays.stream(lays).filter(Objects::nonNull).forEach((UnderlayType t) -> {

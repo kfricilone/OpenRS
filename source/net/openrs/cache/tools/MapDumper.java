@@ -54,6 +54,12 @@ public class MapDumper {
 					Container container = cache.read(5, map);
 					byte[] bytes = new byte[container.getData().limit()];
 					container.getData().get(bytes);
+					
+	         File dir = new File(Constants.MAP_PATH);
+	          
+	          if (!dir.exists()) {
+	                dir.mkdir();
+	          }
 
 					File file = new File(Constants.MAP_PATH, "m" + x + "_" + y + ".dat");
 

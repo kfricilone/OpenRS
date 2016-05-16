@@ -94,6 +94,13 @@ public class EnumTypeList implements TypeList<EnumType> {
 
 	@Override
 	public void print() {
+	      
+	  File dir = new File(Constants.TYPE_PATH);
+
+	  if (!dir.exists()) {
+	        dir.mkdir();
+	  }
+	      
 		File file = new File(Constants.TYPE_PATH, "enums.txt");
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
 			Arrays.stream(enums).filter(Objects::nonNull).forEach((EnumType t) -> {
