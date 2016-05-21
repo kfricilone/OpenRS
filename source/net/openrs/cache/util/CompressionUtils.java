@@ -29,6 +29,9 @@ import java.io.OutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import org.apache.tools.bzip2.CBZip2InputStream;
+import org.apache.tools.bzip2.CBZip2OutputStream;
+
 /**
  * A class that contains methods to compress and uncompress BZIP2 and GZIP byte
  * arrays.
