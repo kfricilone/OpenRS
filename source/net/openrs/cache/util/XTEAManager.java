@@ -26,8 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.primitives.Ints;
-
 import net.openrs.cache.Constants;
 
 /**
@@ -79,7 +77,7 @@ public class XTEAManager {
                                                 keys.add(Integer.valueOf(line));
                                           });
 
-                              maps.put(regionID, Ints.toArray(keys));
+                              maps.put(regionID, listToArray(keys));
                         }
                   }
 
@@ -101,11 +99,20 @@ public class XTEAManager {
                                                 keys.add(Integer.valueOf(line));
                                           });
 
-                              tables.put(typeID, Ints.toArray(keys));
+                              tables.put(typeID, listToArray(keys));
                         }
                   }
             } catch (Exception e) {
                   e.printStackTrace();
             }
       }
+      
+      private static int[] listToArray(List<Integer> list){
+    	  int[] out = new int[list.size()];
+    	  for(int i = 0; i < list.size(); i++){
+    		  out[i] = list.get(i);
+    	  }
+    	  return out;
+      }
+      
 }
