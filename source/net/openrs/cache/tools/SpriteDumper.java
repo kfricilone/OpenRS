@@ -24,10 +24,10 @@ package net.openrs.cache.tools;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import javax.imageio.ImageIO;
-
-import com.google.common.io.Files;
 
 import net.openrs.cache.Cache;
 import net.openrs.cache.Constants;
@@ -69,7 +69,7 @@ public class SpriteDumper {
 			Container container = cache.read(10, cache.getFileId(10, "title.jpg"));
 			byte[] bytes = new byte[container.getData().remaining()];
 			container.getData().get(bytes);
-			Files.write(bytes, new File(Constants.SPRITE_PATH, "title.jpg"));
+			Files.write(Paths.get(Constants.SPRITE_PATH).resolve("title.jpg"), bytes);
 		}
 	}
 
