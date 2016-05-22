@@ -31,8 +31,6 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.common.base.Preconditions;
-
 import net.openrs.cache.Archive;
 import net.openrs.cache.Cache;
 import net.openrs.cache.Constants;
@@ -44,6 +42,7 @@ import net.openrs.cache.type.CacheIndex;
 import net.openrs.cache.type.ConfigArchive;
 import net.openrs.cache.type.TypeList;
 import net.openrs.cache.type.TypePrinter;
+import net.openrs.util.Preconditions;
 
 /**
  * @author Kyle Friz
@@ -94,6 +93,12 @@ public class VarClientStringTypeList implements TypeList<VarClientStringType> {
 
 	@Override
 	public void print() {
+	      File dir = new File(Constants.TYPE_PATH);
+
+	      if (!dir.exists()) {
+	            dir.mkdir();
+	      }
+	      
 		File file = new File(Constants.TYPE_PATH, "varclientstrings.txt");
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
 			Arrays.stream(varClients).filter(Objects::nonNull).forEach((VarClientStringType t) -> {
