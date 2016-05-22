@@ -44,53 +44,51 @@ public class HeightCalc {
 	static final int calculate(int baseX, int baseY, int x, int y) {
 		int xc = (baseX >> 3) + 932638 + x;
 		int yc = (baseY >> 3) + 556190 + y;
-		int var2 = method494(xc + '\ub135', yc + 91923, 4) - 128
-				+ (method494(10294 + xc, yc + '\u93bd', 2) - 128 >> 1) + (method494(xc, yc, 1) - 128 >> 2);
-		var2 = 35 + (int) ((double) var2 * 0.3D);
-		if (var2 >= 10) {
-			if (var2 > 60) {
-				var2 = 60;
+		int n = interpolateNoise(xc + '\ub135', yc + 91923, 4) - 128
+				+ (interpolateNoise(10294 + xc, yc + '\u93bd', 2) - 128 >> 1)
+				+ (interpolateNoise(xc, yc, 1) - 128 >> 2);
+		n = 35 + (int) ((double) n * 0.3D);
+		if (n >= 10) {
+			if (n > 60) {
+				n = 60;
 			}
 		} else {
-			var2 = 10;
+			n = 10;
 		}
 
-		return var2;
+		return n;
 	}
 
-	static final int method494(int var0, int var1, int var2) {
-		int var3 = var0 / var2;
-		int var8 = var0 & var2 - 1;
-		int var4 = var1 / var2;
-		int var6 = var1 & var2 - 1;
-		int var11 = method197(var3, var4);
-		int var10 = method197(var3 + 1, var4);
-		int var7 = method197(var3, var4 + 1);
-		int var5 = method197(1 + var3, 1 + var4);
-		int var12 = method578(var11, var10, var8, var2);
-		int var9 = method578(var7, var5, var8, var2);
-		return method578(var12, var9, var6, var2);
+	static final int interpolateNoise(int x, int y, int frequency) {
+		int intX = x / frequency;
+		int fracX = x & frequency - 1;
+		int intY = y / frequency;
+		int fracY = y & frequency - 1;
+		int v1 = smoothedNoise1(intX, intY);
+		int v2 = smoothedNoise1(intX + 1, intY);
+		int v3 = smoothedNoise1(intX, intY + 1);
+		int v4 = smoothedNoise1(1 + intX, 1 + intY);
+		int i1 = interpolate(v1, v2, fracX, frequency);
+		int i2 = interpolate(v3, v4, fracX, frequency);
+		return interpolate(i1, i2, fracY, frequency);
 	}
 
-	static final int method197(int var0, int var1) {
-		int var2 = method721(var0 - 1, var1 - 1) + method721(var0 + 1, var1 - 1) + method721(var0 - 1, 1 + var1)
-				+ method721(var0 + 1, var1 + 1);
-		int var4 = method721(var0 - 1, var1) + method721(1 + var0, var1) + method721(var0, var1 - 1)
-				+ method721(var0, 1 + var1);
-		int var3 = method721(var0, var1);
-		return var3 / 4 + var4 / 8 + var2 / 16;
+	static final int smoothedNoise1(int x, int y) {
+		int corners = noise(x - 1, y - 1) + noise(x + 1, y - 1) + noise(x - 1, 1 + y) + noise(x + 1, y + 1);
+		int sides = noise(x - 1, y) + noise(1 + x, y) + noise(x, y - 1) + noise(x, 1 + y);
+		int center = noise(x, y);
+		return center / 4 + sides / 8 + corners / 16;
 	}
 
-	static final int method721(int var0, int var1) {
-		int var2 = var1 * 57 + var0;
-		var2 ^= var2 << 13;
-		int var3 = var2 * (789221 + var2 * var2 * 15731) + 1376312589 & Integer.MAX_VALUE;
-		return var3 >> 19 & 255;
+	static final int noise(int x, int y) {
+		int n = x + y * 57;
+		n ^= n << 13;
+		return ((n * (n * n * 15731 + 789221) + 1376312589) & Integer.MAX_VALUE) >> 19 & 255;
 	}
 
-	static final int method578(int var0, int var1, int var2, int var3) {
-		int var4 = 65536 - COS[1024 * var2 / var3] >> 1;
-		return (var4 * var1 >> 16) + (var0 * (65536 - var4) >> 16);
+	static final int interpolate(int a, int b, int x, int y) {
+		int f = 65536 - COS[1024 * x / y] >> 1;
+		return (f * b >> 16) + (a * (65536 - f) >> 16);
 	}
 
 }

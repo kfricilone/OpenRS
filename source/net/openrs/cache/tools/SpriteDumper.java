@@ -27,6 +27,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import com.google.common.io.Files;
+
 import net.openrs.cache.Cache;
 import net.openrs.cache.Constants;
 import net.openrs.cache.Container;
@@ -56,6 +58,11 @@ public class SpriteDumper {
 					ImageIO.write(image, "png", file);
 				}
 			}
+			
+			Container container = cache.read(10, cache.getFileId(10, "title.jpg"));
+			byte[] bytes = new byte[container.getData().remaining()];
+			container.getData().get(bytes);
+			Files.write(bytes, new File(Constants.SPRITE_PATH, "title.jpg"));
 		}
 	}
 

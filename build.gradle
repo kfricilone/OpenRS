@@ -1,5 +1,17 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: "com.stehno.natives"
+
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath "gradle.plugin.com.stehno:gradle-natives:0.2.4"
+  }
+}
 
 sourceCompatibility = 1.8
 
@@ -11,9 +23,16 @@ sourceSets {
 	main.java.srcDir 'source'
 }
 
+
 dependencies {
-	compile group: 'com.google.guava', name: 'guava', version: '19.0'
-	compile group: 'org.apache.ant', name: 'ant', version: '1.9.6'
+	compile 'org.lwjgl:lwjgl:3.0.0b'
+	compile 'org.lwjgl:lwjgl-platform:3.0.0b:natives-windows'
+	compile 'org.lwjgl:lwjgl-platform:3.0.0b:natives-linux'
+	compile 'org.lwjgl:lwjgl-platform:3.0.0b:natives-osx'
+}
+
+natives {
+    jars = [ 'lwjgl-platform-3.0.0b-natives-windows', 'lwjgl-platform-3.0.0b-natives-linux', 'lwjgl-platform-3.0.0b-natives-osx' ]
 }
 
 task types(type: JavaExec, dependsOn: classes) {
