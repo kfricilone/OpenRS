@@ -31,8 +31,6 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.common.base.Preconditions;
-
 import net.openrs.cache.Archive;
 import net.openrs.cache.Cache;
 import net.openrs.cache.Constants;
@@ -44,6 +42,7 @@ import net.openrs.cache.type.CacheIndex;
 import net.openrs.cache.type.ConfigArchive;
 import net.openrs.cache.type.TypeList;
 import net.openrs.cache.type.TypePrinter;
+import net.openrs.util.Preconditions;
 
 /**
  * @author Kyle Friz
