@@ -76,6 +76,10 @@ public class MapImageDumper {
 						for (int y = 0; y < 64; y++) {
 							int overlayId = region.getOverlayId(0, x, y) - 1;
 							int underlayId = region.getUnderlayId(0, x, y) - 1;
+							
+							if (i == 6702)
+								System.out.println(overlayId + ", " + underlayId);
+							
 							if (overlayId > -1) {
 								OverlayType overlay = TypeListManager.lookupOver(overlayId);
 								if (!overlay.isHideUnderlay() && (underlayId > -1)) {

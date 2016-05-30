@@ -230,6 +230,27 @@ public final class ByteBufferUtils {
 	}
 	
 	/**
+	 * Clones a bytebuffer
+	 * @param original
+	 * @return
+	 */
+	public static ByteBuffer clone(final ByteBuffer original) {
+	    // Create clone with same capacity as original.
+	    final ByteBuffer clone = (original.isDirect()) ?
+	        ByteBuffer.allocateDirect(original.capacity()) :
+	        ByteBuffer.allocate(original.capacity());
+
+	    // Create a read-only copy of the original.
+	    // This allows reading from the original without modifying it.
+	    final ByteBuffer readOnlyCopy = original.asReadOnlyBuffer();
+
+	    // Read from the original.
+	    clone.put(readOnlyCopy);
+
+	    return clone;
+	}
+	
+	/**
 	 * Default private constructor to prevent instantiation.
 	 */
 	private ByteBufferUtils() {

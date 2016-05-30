@@ -25,14 +25,14 @@ sourceSets {
 
 
 dependencies {
-	compile 'org.lwjgl:lwjgl:3.0.0b'
-	compile 'org.lwjgl:lwjgl-platform:3.0.0b:natives-windows'
-	compile 'org.lwjgl:lwjgl-platform:3.0.0b:natives-linux'
-	compile 'org.lwjgl:lwjgl-platform:3.0.0b:natives-osx'
+	compile 'org.lwjgl.lwjgl:lwjgl:2.9.3'
+	compile 'org.lwjgl.lwjgl:lwjgl-platform:2.9.3:natives-windows'
+	compile 'org.lwjgl.lwjgl:lwjgl-platform:2.9.3:natives-linux'
+	compile 'org.lwjgl.lwjgl:lwjgl-platform:2.9.3:natives-osx'
 }
 
 natives {
-    jars = [ 'lwjgl-platform-3.0.0b-natives-windows', 'lwjgl-platform-3.0.0b-natives-linux', 'lwjgl-platform-3.0.0b-natives-osx' ]
+    jars = [ 'lwjgl-platform-2.9.3-natives-windows', 'lwjgl-platform-2.9.3-natives-linux', 'lwjgl-platform-2.9.3-natives-osx' ]
 }
 
 task types(type: JavaExec, dependsOn: classes) {

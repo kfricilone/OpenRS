@@ -305,7 +305,9 @@ public class CBZip2OutputStream extends OutputStream implements BZip2Constants {
     private int workDone;
     private int workLimit;
     private boolean firstAttempt;
-    private int nBlocksRandomised;
+    
+    @SuppressWarnings("unused")
+	private int nBlocksRandomised;
 
     private int currentChar = -1;
     private int runLength = 0;
@@ -598,7 +600,8 @@ public class CBZip2OutputStream extends OutputStream implements BZip2Constants {
         bsW(numBits, c);
     }
 
-    private void sendMTFValues() throws IOException {
+    @SuppressWarnings("unused")
+	private void sendMTFValues() throws IOException {
         char len[][] = new char[N_GROUPS][MAX_ALPHA_SIZE];
 
         int v, t, i, j, gs, ge, totc, bt, bc, iter;
@@ -1154,7 +1157,8 @@ public class CBZip2OutputStream extends OutputStream implements BZip2Constants {
         }
     }
 
-    private void mainSort() {
+    @SuppressWarnings("unused")
+	private void mainSort() {
         int i, j, ss, sb;
         int[] runningOrder = new int[256];
         int[] copy = new int[256];
