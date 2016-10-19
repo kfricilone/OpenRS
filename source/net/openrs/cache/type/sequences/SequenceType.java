@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 Kyle Friz
+* Copyright (c) Kyle Fricilone
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -79,7 +79,7 @@ public class SequenceType implements Type {
 				}
 
 				for (int index = 0; index < count; ++index) {
-					this.frameIDs[index] += buffer.getShort() & 0xFFFF << 16;
+					this.frameIDs[index] += (buffer.getShort() & 0xFFFF) << 16;
 				}
 
 			} else if (2 == opcode) {

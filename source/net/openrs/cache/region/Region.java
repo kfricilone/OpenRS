@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 Kyle Friz
+* Copyright (c) Kyle Fricilone
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -199,5 +199,15 @@ public class Region {
 	 */
 	public final List<Location> getLocations() {
 		return locations;
+	}
+	
+	public final String getLocationsIdentifier()
+	{
+		return "l" + (regionID >> 8) + "_" + (regionID & 0xFF);
+	}
+	
+	public final String getTerrainIdentifier()
+	{
+		return "m" + (regionID >> 8) + "_" + (regionID & 0xFF);
 	}
 }

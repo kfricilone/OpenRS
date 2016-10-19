@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 Kyle Friz
+* Copyright (c) Kyle Fricilone
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -74,7 +74,10 @@ public class XTEAManager {
                               Files.lines(Paths.get(".")
                                           .resolve(Constants.XMAP_PATH + file.getName()))
                                           .forEach((String line) -> {
-                                                keys.add(Integer.valueOf(line));
+                                        	 // try {
+                                        		  if (keys.size() < 4)
+                                        			  keys.add(Integer.valueOf(line));
+                                        	  //} catch (Exception e) { System.out.println(file.getName());}
                                           });
 
                               maps.put(regionID, listToArray(keys));
@@ -114,5 +117,7 @@ public class XTEAManager {
     	  }
     	  return out;
       }
+      
+      public static void touch() { };
       
 }

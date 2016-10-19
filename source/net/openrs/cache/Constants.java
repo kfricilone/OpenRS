@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 Kyle Friz
+* Copyright (c) Kyle Fricilone
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ package net.openrs.cache;
  */
 public final class Constants {
 
-	public static final String CACHE_PATH = "./repository/cache/";
+	public static final String CACHE_PATH = "C:\\Users\\kfric\\Desktop\\OSRSCD-master\\data\\";//"./repository/cache/";
 	public static final String CACHEO_PATH = "./repository/cache-other/";
 	public static final String CACHETMP_PATH = "./repository/cache-tmp/";
 	public static final String MODEL_PATH = "./repository/models/";

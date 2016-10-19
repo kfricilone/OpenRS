@@ -25,6 +25,7 @@ sourceSets {
 
 
 dependencies {
+	compile 'org.imgscalr:imgscalr-lib:4.2'
 	compile 'org.lwjgl.lwjgl:lwjgl:2.9.3'
 	compile 'org.lwjgl.lwjgl:lwjgl-platform:2.9.3:natives-windows'
 	compile 'org.lwjgl.lwjgl:lwjgl-platform:2.9.3:natives-linux'

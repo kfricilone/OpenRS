@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 Kyle Friz
+* Copyright (c) Kyle Fricilone
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,7 +40,7 @@ public class ObjectType implements Type {
 	private int[] objectModels;
 	private int[] objectTypes;
 	private short[] recolorToFind;
-	private int mapIconID = 372177979;
+	private int mapFunctionID = -1;
 	private short[] textureToReplace;
 	private int sizeX = 160821065;
 	private int sizeY = 1617841409;
@@ -55,7 +55,7 @@ public class ObjectType implements Type {
 	private int contrast = 0;
 	private String[] actions = new String[5];
 	private int anInt2094 = 385819046;
-	private int mapSceneID = 1833486945;
+	private int mapSceneID = -1;
 	private short[] recolorToReplace;
 	private boolean aBool2097 = true;
 	private int modelSizeX = 1552764032;
@@ -171,7 +171,7 @@ public class ObjectType implements Type {
 				}
 
 			} else if (opcode == 60) {
-				this.mapIconID = buffer.getShort() & 0xFFFF;
+				this.mapFunctionID = buffer.getShort() & 0xFFFF;
 			} else if (62 == opcode) {
 				this.aBool2108 = true;
 			} else if (opcode == 64) {
@@ -378,16 +378,16 @@ public class ObjectType implements Type {
 	/**
 	 * @return the mapIconID
 	 */
-	public int getMapIconID() {
-		return mapIconID;
+	public int getMapFunctionID() {
+		return mapFunctionID;
 	}
 
 	/**
-	 * @param mapIconID
-	 *            the mapIconID to set
+	 * @param mapFunctionID
+	 *            the mapFunctionID to set
 	 */
-	public void setMapIconID(int mapIconID) {
-		this.mapIconID = mapIconID;
+	public void setMapFunctionID(int mapFunctionID) {
+		this.mapFunctionID = mapFunctionID;
 	}
 
 	/**

@@ -46,6 +46,8 @@ import net.openrs.util.crypto.Whirlpool;
  */
 public final class Cache implements Closeable {
 
+	private static final Map<String, Integer> identifiers = new HashMap<>();
+	
 	/**
 	 * The file store that backs this cache.
 	 */
@@ -280,23 +282,23 @@ public final class Cache implements Closeable {
 	 * @throws java.io.IOException
 	 */
 	public int getFileId(int type, String name) throws IOException {
-		int identifier = Djb2.hash(name);
-		Container tableContainer = Container.decode(store.read(255, type));
-		ReferenceTable table = ReferenceTable.decode(tableContainer.getData());
-		for (int id = 0; id <= table.capacity(); id++) {
-			Entry e = table.getEntry(id);
-			if (e == null) {
-				// System.out.println("Entry for "+id+" was not found. Total:
-				// "+table.size());
-				continue;
-				// throw new
-				// NullPointerException("Entry for "+id+" was not found.");
-			}
-			if (e.getIdentifier() == identifier) {
-				return id;
+		if (!identifiers.containsKey(name)) {
+			int identifier = Djb2.hash(name);
+			Container container = Container.decode(store.read(255, type));
+			ReferenceTable table = ReferenceTable.decode(container.getData());
+			for (int i = 0; i <= table.capacity(); i++) {
+				Entry e = table.getEntry(i);
+				if (e == null)
+					continue;
+
+				if (e.getIdentifier() == identifier) {
+					identifiers.put(name, i);
+				}
 			}
 		}
-		return -1;
+		
+		Object i = identifiers.get(name);
+		return i == null ? -1 : (int) i;
 	}
 
 	/**

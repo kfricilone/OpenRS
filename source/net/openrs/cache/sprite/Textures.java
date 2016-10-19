@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 Kyle Friz
+* Copyright (c) Kyle Fricilone
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -98,7 +98,7 @@ public class Textures {
 		logger.info("Loaded " + count + " Texture(s)!");
 	}
 
-	public static int averageColorForPixels(int[] pixels) {
+	private static int averageColorForPixels(int[] pixels) {
 		int redTotal = 0;
 		int greenTotal = 0;
 		int blueTotal = 0;
