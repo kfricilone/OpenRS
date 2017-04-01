@@ -84,11 +84,6 @@ public class ItemType implements Type {
 		this.id = id;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.openrs.cache.type.Type#decode(java.nio.ByteBuffer)
-	 */
 	@Override
 	public void decode(ByteBuffer buffer) {
 		while (true) {
@@ -160,6 +155,8 @@ public class ItemType implements Type {
 					textureFind[idx] = (short) (buffer.getShort() & 0xFFFF);
 					textureReplace[idx] = (short) (buffer.getShort() & 0xFFFF);
 				}
+			} else if(opcode == 42) { // #138
+				buffer.get();
 			} else if (opcode == 65) {
 				stockMarket = true;
 			} else if (opcode == 78) {
@@ -212,22 +209,12 @@ public class ItemType implements Type {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.openrs.cache.type.Type#encode()
-	 */
 	@Override
 	public ByteBuffer encode() {
 		ByteBuffer buffer = ByteBuffer.allocate(1132);
 		return (ByteBuffer) buffer.flip();
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.openrs.cache.type.Type#encode317()
-	 */
+
 	@Override
 	public ByteBuffer encode317() {
 		ByteBuffer buffer = ByteBuffer.allocate(1132);
