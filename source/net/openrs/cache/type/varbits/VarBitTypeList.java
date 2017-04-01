@@ -109,5 +109,10 @@ public class VarBitTypeList implements TypeList<VarBitType> {
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	public int size() {
+		return varBits.length;
+	}
 
 }

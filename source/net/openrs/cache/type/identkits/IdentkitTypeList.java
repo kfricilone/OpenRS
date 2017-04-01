@@ -111,4 +111,9 @@ public class IdentkitTypeList implements TypeList<IdentkitType> {
 		}
 	}
 
+	@Override
+	public int size() {
+		return kits.length;
+	}
+
 }

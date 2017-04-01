@@ -109,5 +109,10 @@ public class SequenceTypeList implements TypeList<SequenceType> {
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	public int size() {
+		return seqs.length;
+	}
 
 }

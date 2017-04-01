@@ -112,5 +112,10 @@ public class ObjectTypeList implements TypeList<ObjectType> {
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	public int size() {
+		return objs.length;
+	}
 
 }

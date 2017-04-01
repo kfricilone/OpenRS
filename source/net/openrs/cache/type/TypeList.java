@@ -30,10 +30,12 @@ import net.openrs.cache.Cache;
  */
 public interface TypeList<T extends Type> {
 
-	public void initialize(Cache cache);
+	void initialize(Cache cache);
 
-	public T list(int id);
+	T list(int id);
 
-	public void print();
+	void print();
+	
+	int size();
 
 }

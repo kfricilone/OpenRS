@@ -109,5 +109,10 @@ public class InvTypeList implements TypeList<InvType> {
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	public int size() {
+		return invs.length;
+	}
 
 }

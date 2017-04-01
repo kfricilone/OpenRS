@@ -110,5 +110,10 @@ public class EnumTypeList implements TypeList<EnumType> {
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	public int size() {
+		return enums.length;
+	}
 
 }
