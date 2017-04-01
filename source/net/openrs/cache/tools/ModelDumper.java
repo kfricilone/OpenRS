@@ -40,7 +40,15 @@ public class ModelDumper {
 
 	public static void main(String[] args) throws IOException {
 		try (Cache cache = new Cache(FileStore.open(Constants.CACHE_PATH))) {
+			
+			File parent = new File(Constants.MODEL_PATH + File.separator + "all");
+			
+			if (!parent.exists()) {
+				parent.mkdirs();
+			}
+			
 			ReferenceTable table = ReferenceTable.decode(Container.decode(cache.getStore().read(255, 7)).getData());
+			
 			for (int i = 0; i < table.capacity(); i++) {
 				if (table.getEntry(i) == null)
 					continue;
@@ -49,11 +57,13 @@ public class ModelDumper {
 				byte[] bytes = new byte[container.getData().limit()];
 				container.getData().get(bytes);
 
-				File file = new File(Constants.MODEL_PATH, i + ".dat");
-
-				DataOutputStream dos = new DataOutputStream(new FileOutputStream(file));
-				dos.write(bytes);
-				dos.close();
+				try(DataOutputStream dos = new DataOutputStream(new FileOutputStream(new File(parent, i + ".dat")))) {
+					dos.write(bytes);
+				}
+				
+				double progress = (double) i / table.capacity() * 100;
+				
+				System.out.printf("%.2f%s\n", progress, "%");				
 			}
 		}
 	}
