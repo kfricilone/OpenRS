@@ -27,7 +27,7 @@ package net.openrs.cache;
  */
 public final class Constants {
 
-	public static final String CACHE_PATH = "C:\\Users\\kfric\\Desktop\\OSRSCD-master\\data\\";//"./repository/cache/";
+	public static final String CACHE_PATH = "./repository/cache/";
 	public static final String CACHEO_PATH = "./repository/cache-other/";
 	public static final String CACHETMP_PATH = "./repository/cache-tmp/";
 	public static final String MODEL_PATH = "./repository/models/";

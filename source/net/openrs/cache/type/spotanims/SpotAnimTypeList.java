@@ -112,5 +112,10 @@ public class SpotAnimTypeList implements TypeList<SpotAnimType> {
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	public int size() {
+		return spots.length;
+	}
 
 }

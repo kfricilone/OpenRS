@@ -109,5 +109,10 @@ public class VarPlayerTypeList implements TypeList<VarPlayerType> {
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	public int size() {
+		return varPlayers.length;
+	}
 
 }

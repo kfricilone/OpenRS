@@ -55,11 +55,6 @@ public class ItemTypeList implements TypeList<ItemType> {
 
 	private Logger logger = Logger.getLogger(ItemTypeList.class.getName());
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.openrs.cache.type.TypeList#initialize(net.openrs.cache.Cache)
-	 */
 	@Override
 	public void initialize(Cache cache) {
 		int count = 0;
@@ -89,11 +84,6 @@ public class ItemTypeList implements TypeList<ItemType> {
 		logger.info("Loaded " + count + " ItemType(s)!");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.openrs.cache.type.TypeList#list(int)
-	 */
 	@Override
 	public ItemType list(int id) {
 		Preconditions.checkArgument(id >= 0, "ID can't be negative!");
@@ -119,6 +109,11 @@ public class ItemTypeList implements TypeList<ItemType> {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public int size() {
+		return items.length;
 	}
 
 }

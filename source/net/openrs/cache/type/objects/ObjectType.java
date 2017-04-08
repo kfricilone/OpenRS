@@ -80,11 +80,6 @@ public class ObjectType implements Type {
 		this.id = id;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.openrs.cache.type.Type#decode(java.nio.ByteBuffer)
-	 */
 	@Override
 	public void decode(ByteBuffer buffer) {
 		while (true) {
@@ -92,7 +87,7 @@ public class ObjectType implements Type {
 			if (opcode == 0)
 				break;
 
-			if (1 == opcode) {
+			if (opcode == 1) {
 				int length = buffer.get() & 0xFF;
 				if (length > 0) {
 					this.objectTypes = new int[length];
@@ -117,7 +112,7 @@ public class ObjectType implements Type {
 				}
 			} else if (opcode == 14) {
 				this.sizeX = buffer.get() & 0xFF;
-			} else if (15 == opcode) {
+			} else if (opcode == 15) {
 				this.sizeY = buffer.get() & 0xFF;
 			} else if (opcode == 17) {
 				this.anInt2094 = 0;
@@ -128,11 +123,11 @@ public class ObjectType implements Type {
 				this.anInt2088 = buffer.get() & 0xFF;
 			} else if (opcode == 21) {
 				this.anInt2105 = 0;
-			} else if (22 == opcode) {
+			} else if (opcode == 22) {
 				this.nonFlatShading = true;
 			} else if (opcode == 23) {
 				this.aBool2111 = true;
-			} else if (24 == opcode) {
+			} else if (opcode == 24) {
 				this.animationID = buffer.getShort() & 0xFFFF;
 				if (this.animationID == 0xFFFF) {
 					this.animationID = -1;
@@ -172,7 +167,7 @@ public class ObjectType implements Type {
 
 			} else if (opcode == 60) {
 				this.mapFunctionID = buffer.getShort() & 0xFFFF;
-			} else if (62 == opcode) {
+			} else if (opcode == 62) {
 				this.aBool2108 = true;
 			} else if (opcode == 64) {
 				this.aBool2097 = false;
@@ -180,21 +175,21 @@ public class ObjectType implements Type {
 				this.modelSizeX = buffer.getShort() & 0xFFFF;
 			} else if (opcode == 66) {
 				this.modelSizeHeight = buffer.getShort() & 0xFFFF;
-			} else if (67 == opcode) {
+			} else if (opcode == 67) {
 				this.modelSizeY = buffer.getShort() & 0xFFFF;
 			} else if (opcode == 68) {
 				this.mapSceneID = buffer.getShort() & 0xFFFF;
 			} else if (opcode == 69) {
 				buffer.get();
-			} else if (70 == opcode) {
+			} else if (opcode == 70) {
 				this.offsetX = buffer.getShort() & 0xFFFF;
 			} else if (opcode == 71) {
 				this.offsetHeight = buffer.getShort() & 0xFFFF;
 			} else if (opcode == 72) {
 				this.offsetY = buffer.getShort() & 0xFFFF;
-			} else if (73 == opcode) {
+			} else if (opcode == 73) {
 				this.aBool2104 = true;
-			} else if (74 == opcode) {
+			} else if (opcode == 74) {
 				this.isSolid = true;
 			} else if (opcode == 75) {
 				this.anInt2106 = buffer.get() & 0xFF;
@@ -238,33 +233,18 @@ public class ObjectType implements Type {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.openrs.cache.type.Type#encode()
-	 */
 	@Override
 	public ByteBuffer encode() {
 		ByteBuffer buffer = ByteBuffer.allocate(1132);
 		return (ByteBuffer) buffer.flip();
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.openrs.cache.type.Type#encode317()
-	 */
+
 	@Override
 	public ByteBuffer encode317() {
 		ByteBuffer buffer = ByteBuffer.allocate(1132);
 		return (ByteBuffer) buffer.flip();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.openrs.cache.type.Type#getID()
-	 */
 	@Override
 	public int getID() {
 		return id;

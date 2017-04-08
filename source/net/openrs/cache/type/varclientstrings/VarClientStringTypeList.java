@@ -109,5 +109,10 @@ public class VarClientStringTypeList implements TypeList<VarClientStringType> {
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	public int size() {
+		return varClients.length;
+	}
 
 }
