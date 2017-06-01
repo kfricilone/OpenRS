@@ -22,6 +22,8 @@
 package net.openrs.cache.type.enums;
 
 import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.openrs.cache.type.Type;
 import net.openrs.util.ByteBufferUtils;
@@ -33,14 +35,12 @@ import net.openrs.util.ByteBufferUtils;
 public class EnumType implements Type {
 
 	private final int id;
-	private int[] intVals;
 	private char keyType;
 	private char valType;
 	private String defaultString = "null";
 	private int defaultInt;
 	private int size = 0;
-	private int[] keys;
-	private String[] stringVals;
+	private Map<Integer, Object> params = null;
 
 	public EnumType(int id) {
 		this.id = id;
@@ -68,21 +68,21 @@ public class EnumType implements Type {
 				defaultInt = buffer.getInt();
 			} else if (opcode == 5) {
 				size = buffer.getShort() & 0xFFFF;
-				keys = new int[size];
-				stringVals = new String[size];
+				params = new HashMap<>(size);
 
 				for (int index = 0; index < size; ++index) {
-					keys[index] = buffer.getInt();
-					stringVals[index] = ByteBufferUtils.getString(buffer);
+					int key = buffer.getInt();
+					String value = ByteBufferUtils.getString(buffer);
+					params.put(key, value);
 				}
 			} else if (opcode == 6) {
 				size = buffer.getShort() & 0xFFFF;
-				keys = new int[size];
-				intVals = new int[size];
+				params = new HashMap<>(size);
 
 				for (int index = 0; index < size; ++index) {
-					keys[index] = buffer.getInt();
-					intVals[index] = buffer.getInt();
+					int key = buffer.getInt();
+					int value = buffer.getInt();
+					params.put(key, value);
 				}
 			}
 		}
@@ -118,21 +118,6 @@ public class EnumType implements Type {
 	@Override
 	public int getID() {
 		return id;
-	}
-
-	/**
-	 * @return the intVals
-	 */
-	public int[] getIntVals() {
-		return intVals;
-	}
-
-	/**
-	 * @param intVals
-	 *            the intVals to set
-	 */
-	public void setIntVals(int[] intVals) {
-		this.intVals = intVals;
 	}
 
 	/**
@@ -208,36 +193,6 @@ public class EnumType implements Type {
 	 */
 	public void setSize(int size) {
 		this.size = size;
-	}
-
-	/**
-	 * @return the keys
-	 */
-	public int[] getKeys() {
-		return keys;
-	}
-
-	/**
-	 * @param keys
-	 *            the keys to set
-	 */
-	public void setKeys(int[] keys) {
-		this.keys = keys;
-	}
-
-	/**
-	 * @return the stringVals
-	 */
-	public String[] getStringVals() {
-		return stringVals;
-	}
-
-	/**
-	 * @param stringVals
-	 *            the stringVals to set
-	 */
-	public void setStringVals(String[] stringVals) {
-		this.stringVals = stringVals;
 	}
 
 }
