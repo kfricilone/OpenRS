@@ -63,25 +63,25 @@ public class HitBarType implements Type {
 			if (opcode == 1) {
 				buffer.getShort();
 			} else if (opcode == 2) {
-				this.anInt2098 = buffer.get() & 0xFF;
+				anInt2098 = buffer.get() & 0xFF;
 			} else if (opcode == 3) {
-				this.anInt2099 = buffer.get() & 0xFF;
+				anInt2099 = buffer.get() & 0xFF;
 			} else if (opcode == 4) {
-				this.anInt2103 = 0;
+				anInt2103 = 0;
 			} else if (opcode == 5) {
-				this.anInt2100 = buffer.getShort() & 0xFFFF;
+				anInt2100 = buffer.getShort() & 0xFFFF;
 			} else if (opcode == 6) {
 				buffer.get();
 			} else if (opcode == 7) {
-				this.secondarySprite = ByteBufferUtils.getSmartInt(buffer);
+				secondarySprite = ByteBufferUtils.getSmartInt(buffer);
 			} else if (opcode == 8) {
-				this.primarySprite = ByteBufferUtils.getSmartInt(buffer);
+				primarySprite = ByteBufferUtils.getSmartInt(buffer);
 			} else if (opcode == 11) {
-				this.anInt2103 = buffer.getShort() & 0xFFFF;
+				anInt2103 = buffer.getShort() & 0xFFFF;
 			} else if (opcode == 14) {
-				this.anInt2104 = buffer.get() & 0xFF;
+				anInt2104 = buffer.get() & 0xFF;
 			} else if (opcode == 15) {
-				this.anInt2105 = buffer.get() & 0xFF;
+				anInt2105 = buffer.get() & 0xFF;
 			}
 		}
 	}

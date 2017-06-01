@@ -45,7 +45,7 @@ import net.openrs.cache.type.hitmarks.HitMarkType;
  */
 public class SpriteDumper {
 	
-	public static void main1(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException {
 		try (Cache cache = new Cache(FileStore.open(Constants.CACHE_PATH))) {
 			ReferenceTable table = ReferenceTable.decode(Container.decode(cache.getStore().read(255, 8)).getData());
 			for (int i = 0; i < table.capacity(); i++) {
