@@ -22,6 +22,8 @@
 package net.openrs.cache.type.npcs;
 
 import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.openrs.cache.type.Type;
 import net.openrs.util.ByteBufferUtils;
@@ -47,7 +49,7 @@ public class NpcType implements Type {
 	private short[] retextureToReplace;
 	private int rotate90RightAnimation = -1;
 	private boolean aBool2170 = true;
-	private int resizeX = -1;
+	private int resizeX = 128;
 	private int contrast = 0;
 	private int rotate180Animation = -1;
 	private int anInt2174 = -1;
@@ -55,18 +57,18 @@ public class NpcType implements Type {
 	private boolean renderOnMinimap = true;
 	private int combatLevel = -1;
 	private int rotate90LeftAnimation = -1;
-	private int resizeY = 957515136;
+	private int resizeY = 128;
 	private boolean hasRenderPriority = false;
 	private int ambient = 0;
 	private int headIcon = -1;
-	private int anInt2184 = -1;
 	private int[] anIntArray2185;
 	private short[] retextureToFind;
 	private int anInt2187 = -1;
 	private boolean isClickable = true;
 	private int anInt2189 = -1;
 	private boolean aBool2190 = false;
-
+	private Map<Integer, Object> params = null;
+	
 	public NpcType(int id) {
 		this.id = id;
 	}
@@ -166,7 +168,7 @@ public class NpcType implements Type {
 				}
 
 				int length = buffer.get() & 0xFF;
-				anIntArray2185 = new int[length + 1];
+				anIntArray2185 = new int[length + 2];
 
 				for (int idx = 0; idx <= length; ++idx) {
 					anIntArray2185[idx] = buffer.getShort() & 0xFFFF;
@@ -175,14 +177,59 @@ public class NpcType implements Type {
 					}
 				}
 
+				anIntArray2185[length + 1] = -1;
 			} else if (107 == opcode) {
 				isClickable = false;
 			} else if (opcode == 109) {
 				aBool2170 = false;
 			} else if (opcode == 111) {
 				aBool2190 = true;
-			} else if (opcode == 112) {
-				anInt2184 = buffer.get() & 0xFF;
+			} else if (opcode == 118) {
+				anInt2174 = buffer.getShort() & 0xFFFF;
+				if (0xFFFF == anInt2174) {
+					anInt2174 = -1;
+				}
+
+				anInt2187 = buffer.getShort() & 0xFFFF;
+				if (0xFFFF == anInt2187) {
+					anInt2187 = -1;
+				}
+				
+				int var = buffer.getShort() & 0xFFFF;
+				if (var == 0xFFFF) {
+					var = -1;
+				}
+
+				int length = buffer.get() & 0xFF;
+				anIntArray2185 = new int[length + 2];
+
+				for (int idx = 0; idx <= length; ++idx) {
+					anIntArray2185[idx] = buffer.getShort() & 0xFFFF;
+					if (anIntArray2185[idx] == 0xFFFF) {
+						anIntArray2185[idx] = -1;
+					}
+				}
+
+				anIntArray2185[length + 1] = var;
+			} else if (opcode == 249) {
+				int length = buffer.get() & 0xFF;
+
+				params = new HashMap<>(length);
+				for (int i = 0; i < length; i++) {
+					boolean isString = (buffer.get() & 0xFF) == 1;
+					int key = ByteBufferUtils.getMedium(buffer);
+					Object value;
+
+					if (isString) {
+						value = ByteBufferUtils.getString(buffer);
+					}
+
+					else {
+						value = buffer.getInt();
+					}
+
+					params.put(key, value);
+				}
 			}
 		}
 	}
@@ -342,10 +389,6 @@ public class NpcType implements Type {
 
 		if (aBool2190 == true) {
 			buffer.put((byte) 111);
-		}
-		if (anInt2184 != -1) {
-			buffer.put((byte) 112);
-			buffer.put((byte) anInt2184);
 		}
 
 		buffer.put((byte) 0);
@@ -530,13 +573,6 @@ public class NpcType implements Type {
 	 */
 	public int getHeadIcon() {
 		return headIcon;
-	}
-
-	/**
-	 * @return the anInt2184
-	 */
-	public int getAnInt2184() {
-		return anInt2184;
 	}
 
 	/**

@@ -22,6 +22,8 @@
 package net.openrs.cache.type;
 
 import net.openrs.cache.Cache;
+import net.openrs.cache.type.areas.AreaType;
+import net.openrs.cache.type.areas.AreaTypeList;
 import net.openrs.cache.type.enums.EnumType;
 import net.openrs.cache.type.enums.EnumTypeList;
 import net.openrs.cache.type.identkits.IdentkitType;
@@ -72,6 +74,7 @@ public class TypeListManager {
 	private static final VarClientTypeList varc = new VarClientTypeList();
 	private static final VarClientStringTypeList varcstr = new VarClientStringTypeList();
 	private static final VarPlayerTypeList varp = new VarPlayerTypeList();
+	private static final AreaTypeList area = new AreaTypeList();
 
 	public static void initialize(Cache cache) {
 		enm.initialize(cache);
@@ -88,6 +91,7 @@ public class TypeListManager {
 		varc.initialize(cache);
 		varcstr.initialize(cache);
 		varp.initialize(cache);
+		area.initialize(cache);
 	}
 
 	public static final EnumType lookupEnum(int id) {
@@ -146,6 +150,10 @@ public class TypeListManager {
 		return varp.list(id);
 	}
 
+	public static final AreaType lookupArea(int id) {
+		return area.list(id);
+	}
+	
 	public static void print() {
 		item.print();
 		ident.print();
@@ -161,6 +169,7 @@ public class TypeListManager {
 		spot.print();
 		seq.print();
 		inv.print();
+		area.print();
 	}
 
 }

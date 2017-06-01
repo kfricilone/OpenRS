@@ -22,6 +22,8 @@
 package net.openrs.cache.type.items;
 
 import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.openrs.cache.type.Type;
 import net.openrs.util.ByteBufferUtils;
@@ -62,9 +64,9 @@ public class ItemType implements Type {
 	private int notedID;
 	private int notedTemplate;
 	private String[] options = new String[5];
-	private int resizeX;
-	private int resizeY;
-	private int resizeZ;
+	private int resizeX = 128;
+	private int resizeY = 128;
+	private int resizeZ = 128;
 	private int stackable = 0;
 	private boolean stockMarket;
 	private int team;
@@ -76,10 +78,11 @@ public class ItemType implements Type {
 	private int yOffset2d = 0;
 	private int zan2d = 0;
 	private int zoom2d = 2000;
-	
 	private int anInt1879;
 	private int anInt1833;
-
+	private int anInt2173 = -2;
+	private Map<Integer, Object> params = null;
+	
 	public ItemType(int id) {
 		this.id = id;
 	}
@@ -95,8 +98,6 @@ public class ItemType implements Type {
 				inventoryModel = buffer.getShort() & 0xFFFF;
 			} else if (opcode == 2) {
 				name = ByteBufferUtils.getString(buffer);
-				if (id == 13309)
-					System.out.println(name);
 			} else if (opcode == 4) {
 				zoom2d = buffer.getShort() & 0xFFFF;
 			} else if (opcode == 5) {
@@ -155,8 +156,8 @@ public class ItemType implements Type {
 					textureFind[idx] = (short) (buffer.getShort() & 0xFFFF);
 					textureReplace[idx] = (short) (buffer.getShort() & 0xFFFF);
 				}
-			} else if(opcode == 42) { // #138
-				buffer.get();
+			} else if(opcode == 42) {
+				anInt2173 = buffer.get() & 0xFF;
 			} else if (opcode == 65) {
 				stockMarket = true;
 			} else if (opcode == 78) {
@@ -205,6 +206,25 @@ public class ItemType implements Type {
 				anInt1879 = buffer.getShort() & 0xFFFF;
 			} else if (opcode == 149) {
 				anInt1833 = buffer.getShort() & 0xFFFF;
+			} else if (opcode == 249) {
+				int length = buffer.get() & 0xFF;
+
+				params = new HashMap<>(length);
+				for (int i = 0; i < length; i++) {
+					boolean isString = (buffer.get() & 0xFF) == 1;
+					int key = ByteBufferUtils.getMedium(buffer);
+					Object value;
+
+					if (isString) {
+						value = ByteBufferUtils.getString(buffer);
+					}
+
+					else {
+						value = buffer.getInt();
+					}
+
+					params.put(key, value);
+				}
 			}
 		}
 	}

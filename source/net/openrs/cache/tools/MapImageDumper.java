@@ -152,6 +152,9 @@ public class MapImageDumper {
 		int dimX = maxX - minX;
 		int dimY = maxY - minY;
 
+		int boundX = dimX - 1;
+		int boundY = dimY - 1;
+		
 		dimX *= MAP_SCALE;
 		dimY *= MAP_SCALE;
 		
@@ -235,10 +238,10 @@ public class MapImageDumper {
 					int tRed = 0, tGreen = 0, tBlue = 0;
 					int count = 0;
 					
-					int maxDY = Math.min(maxY, drawY + 3);
-					int maxDX = Math.min(maxX, drawX + 3);
-					int minDY = Math.max(minY, drawY - 3);
-					int minDX = Math.max(minX, drawX - 3);
+					int maxDY = Math.min(boundY, drawY + 3);
+					int maxDX = Math.min(boundX, drawX + 3);
+					int minDY = Math.max(0, drawY - 3);
+					int minDX = Math.max(0, drawX - 3);
 					
 					
 					for (int dy = minDY; dy < maxDY; dy++)

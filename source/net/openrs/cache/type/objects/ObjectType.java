@@ -22,6 +22,8 @@
 package net.openrs.cache.type.objects;
 
 import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.openrs.cache.type.Type;
 import net.openrs.util.ByteBufferUtils;
@@ -34,7 +36,7 @@ public class ObjectType implements Type {
 
 	private final int id;
 	private short[] retextureToFind;
-	private int anInt2069 = -1652411312;
+	private int anInt2069 = 16;
 	private boolean isSolid = false;
 	private String name = "null";
 	private int[] objectModels;
@@ -42,39 +44,41 @@ public class ObjectType implements Type {
 	private short[] recolorToFind;
 	private int mapFunctionID = -1;
 	private short[] textureToReplace;
-	private int sizeX = 160821065;
-	private int sizeY = 1617841409;
+	private int sizeX = 1;
+	private int sizeY = 1;
 	private int anInt2083 = 0;
 	private int[] anIntArray2084;
 	private int offsetX = 0;
 	private boolean nonFlatShading = false;
-	private int anInt2088 = -1212747031;
-	private int animationID = 706875959;
-	private int varpID = -155117661;
+	private int anInt2088 = -1;
+	private int animationID = -1;
+	private int varpID = -1;
 	private int ambient = 0;
 	private int contrast = 0;
 	private String[] actions = new String[5];
-	private int anInt2094 = 385819046;
+	private int anInt2094 = 2;
 	private int mapSceneID = -1;
 	private short[] recolorToReplace;
 	private boolean aBool2097 = true;
-	private int modelSizeX = 1552764032;
-	private int modelSizeHeight = 636925568;
-	private int modelSizeY = 408014720;
+	private int modelSizeX = 128;
+	private int modelSizeHeight = 128;
+	private int modelSizeY = 128;
 	private int objectID;
 	private int offsetHeight = 0;
 	private int offsetY = 0;
 	private boolean aBool2104 = false;
-	private int anInt2105 = 359794785;
-	private int anInt2106 = -1443463903;
+	private int anInt2105 = -1;
+	private int anInt2106 = -1;
 	private int[] configChangeDest;
 	private boolean aBool2108 = false;
-	private int configId = -1070845109;
-	private int anInt2110 = 2019882883;
+	private int configId = -1;
+	private int anInt2110 = -1;
 	private boolean aBool2111 = false;
 	private int anInt2112 = 0;
 	private int anInt2113 = 0;
 	private boolean aBool2114 = true;
+	private int mapAreaId = -1;
+	private Map<Integer, Object> params = null;
 
 	public ObjectType(int id) {
 		this.id = id;
@@ -90,145 +94,194 @@ public class ObjectType implements Type {
 			if (opcode == 1) {
 				int length = buffer.get() & 0xFF;
 				if (length > 0) {
-					this.objectTypes = new int[length];
-					this.objectModels = new int[length];
+					objectTypes = new int[length];
+					objectModels = new int[length];
 
 					for (int index = 0; index < length; ++index) {
-						this.objectModels[index] = buffer.getShort() & 0xFFFF;
-						this.objectTypes[index] = buffer.get() & 0xFF;
+						objectModels[index] = buffer.getShort() & 0xFFFF;
+						objectTypes[index] = buffer.get() & 0xFF;
 					}
 				}
 			} else if (opcode == 2) {
-				this.name = ByteBufferUtils.getString(buffer);
+				name = ByteBufferUtils.getString(buffer);
 			} else if (opcode == 5) {
 				int length = buffer.get() & 0xFF;
 				if (length > 0) {
-					this.objectTypes = null;
-					this.objectModels = new int[length];
+					objectTypes = null;
+					objectModels = new int[length];
 
 					for (int index = 0; index < length; ++index) {
-						this.objectModels[index] = buffer.getShort() & 0xFFFF;
+						objectModels[index] = buffer.getShort() & 0xFFFF;
 					}
 				}
 			} else if (opcode == 14) {
-				this.sizeX = buffer.get() & 0xFF;
+				sizeX = buffer.get() & 0xFF;
 			} else if (opcode == 15) {
-				this.sizeY = buffer.get() & 0xFF;
+				sizeY = buffer.get() & 0xFF;
 			} else if (opcode == 17) {
-				this.anInt2094 = 0;
-				this.aBool2114 = false;
+				anInt2094 = 0;
+				aBool2114 = false;
 			} else if (opcode == 18) {
-				this.aBool2114 = false;
+				aBool2114 = false;
 			} else if (opcode == 19) {
-				this.anInt2088 = buffer.get() & 0xFF;
+				anInt2088 = buffer.get() & 0xFF;
 			} else if (opcode == 21) {
-				this.anInt2105 = 0;
+				anInt2105 = 0;
 			} else if (opcode == 22) {
-				this.nonFlatShading = true;
+				nonFlatShading = true;
 			} else if (opcode == 23) {
-				this.aBool2111 = true;
+				aBool2111 = true;
 			} else if (opcode == 24) {
-				this.animationID = buffer.getShort() & 0xFFFF;
-				if (this.animationID == 0xFFFF) {
-					this.animationID = -1;
+				animationID = buffer.getShort() & 0xFFFF;
+				if (animationID == 0xFFFF) {
+					animationID = -1;
 				}
 			} else if (opcode == 27) {
-				this.anInt2094 = 192909523;
+				anInt2094 = 192909523;
 			} else if (opcode == 28) {
-				this.anInt2069 = buffer.get() & 0xFF;
+				anInt2069 = buffer.get() & 0xFF;
 			} else if (opcode == 29) {
-				this.ambient = buffer.get();
+				ambient = buffer.get();
 			} else if (opcode == 39) {
-				this.contrast = buffer.get();
+				contrast = buffer.get();
 			} else if (opcode >= 30 && opcode < 35) {
-				this.actions[opcode - 30] = ByteBufferUtils.getString(buffer);
-				if (this.actions[opcode - 30].equalsIgnoreCase("Hidden")) {
-					this.actions[opcode - 30] = null;
+				actions[opcode - 30] = ByteBufferUtils.getString(buffer);
+				if (actions[opcode - 30].equalsIgnoreCase("Hidden")) {
+					actions[opcode - 30] = null;
 				}
 			} else if (opcode == 40) {
 				int length = buffer.get() & 0xFF;
-				this.recolorToFind = new short[length];
-				this.recolorToReplace = new short[length];
+				recolorToFind = new short[length];
+				recolorToReplace = new short[length];
 
 				for (int index = 0; index < length; ++index) {
-					this.recolorToFind[index] = (short) (buffer.getShort() & 0xFFFF);
-					this.recolorToReplace[index] = (short) (buffer.getShort() & 0xFFFF);
+					recolorToFind[index] = (short) (buffer.getShort() & 0xFFFF);
+					recolorToReplace[index] = (short) (buffer.getShort() & 0xFFFF);
 				}
 
 			} else if (opcode == 41) {
 				int length = buffer.get() & 0xFF;
-				this.retextureToFind = new short[length];
-				this.textureToReplace = new short[length];
+				retextureToFind = new short[length];
+				textureToReplace = new short[length];
 
 				for (int index = 0; index < length; ++index) {
-					this.retextureToFind[index] = (short) (buffer.getShort() & 0xFFFF);
-					this.textureToReplace[index] = (short) (buffer.getShort() & 0xFFFF);
+					retextureToFind[index] = (short) (buffer.getShort() & 0xFFFF);
+					textureToReplace[index] = (short) (buffer.getShort() & 0xFFFF);
 				}
 
 			} else if (opcode == 60) {
-				this.mapFunctionID = buffer.getShort() & 0xFFFF;
+				mapFunctionID = buffer.getShort() & 0xFFFF;
 			} else if (opcode == 62) {
-				this.aBool2108 = true;
+				aBool2108 = true;
 			} else if (opcode == 64) {
-				this.aBool2097 = false;
+				aBool2097 = false;
 			} else if (opcode == 65) {
-				this.modelSizeX = buffer.getShort() & 0xFFFF;
+				modelSizeX = buffer.getShort() & 0xFFFF;
 			} else if (opcode == 66) {
-				this.modelSizeHeight = buffer.getShort() & 0xFFFF;
+				modelSizeHeight = buffer.getShort() & 0xFFFF;
 			} else if (opcode == 67) {
-				this.modelSizeY = buffer.getShort() & 0xFFFF;
+				modelSizeY = buffer.getShort() & 0xFFFF;
 			} else if (opcode == 68) {
-				this.mapSceneID = buffer.getShort() & 0xFFFF;
+				mapSceneID = buffer.getShort() & 0xFFFF;
 			} else if (opcode == 69) {
 				buffer.get();
 			} else if (opcode == 70) {
-				this.offsetX = buffer.getShort() & 0xFFFF;
+				offsetX = buffer.getShort() & 0xFFFF;
 			} else if (opcode == 71) {
-				this.offsetHeight = buffer.getShort() & 0xFFFF;
+				offsetHeight = buffer.getShort() & 0xFFFF;
 			} else if (opcode == 72) {
-				this.offsetY = buffer.getShort() & 0xFFFF;
+				offsetY = buffer.getShort() & 0xFFFF;
 			} else if (opcode == 73) {
-				this.aBool2104 = true;
+				aBool2104 = true;
 			} else if (opcode == 74) {
-				this.isSolid = true;
+				isSolid = true;
 			} else if (opcode == 75) {
-				this.anInt2106 = buffer.get() & 0xFF;
+				anInt2106 = buffer.get() & 0xFF;
 			} else if (opcode == 77) {
-				this.varpID = buffer.getShort() & 0xFFFF;
-				if (this.varpID == 0xFFFF) {
-					this.varpID = -1;
+				varpID = buffer.getShort() & 0xFFFF;
+				if (varpID == 0xFFFF) {
+					varpID = -1;
 				}
 
-				this.configId = buffer.getShort() & 0xFFFF;
-				if (this.configId == 0xFFFF) {
-					this.configId = -1;
+				configId = buffer.getShort() & 0xFFFF;
+				if (configId == 0xFFFF) {
+					configId = -1;
 				}
 
 				int length = buffer.get() & 0xFF;
-				this.configChangeDest = new int[length + 1];
+				configChangeDest = new int[length + 2];
 
 				for (int index = 0; index <= length; ++index) {
-					this.configChangeDest[index] = buffer.getShort() & 0xFFFF;
-					if (0xFFFF == this.configChangeDest[index]) {
-						this.configChangeDest[index] = -1;
+					configChangeDest[index] = buffer.getShort() & 0xFFFF;
+					if (0xFFFF == configChangeDest[index]) {
+						configChangeDest[index] = -1;
 					}
 				}
 
+				configChangeDest[length + 1] = -1;
 			} else if (opcode == 78) {
-				this.anInt2110 = buffer.getShort() & 0xFFFF;
-				this.anInt2083 = buffer.get() & 0xFF;
+				anInt2110 = buffer.getShort() & 0xFFFF;
+				anInt2083 = buffer.get() & 0xFF;
 			} else if (opcode == 79) {
-				this.anInt2112 = buffer.getShort() & 0xFFFF;
-				this.anInt2113 = buffer.getShort() & 0xFFFF;
-				this.anInt2083 = buffer.get() & 0xFF;
+				anInt2112 = buffer.getShort() & 0xFFFF;
+				anInt2113 = buffer.getShort() & 0xFFFF;
+				anInt2083 = buffer.get() & 0xFF;
 				int length = buffer.get() & 0xFF;
-				this.anIntArray2084 = new int[length];
+				anIntArray2084 = new int[length];
 
 				for (int index = 0; index < length; ++index) {
-					this.anIntArray2084[index] = buffer.getShort() & 0xFFFF;
+					anIntArray2084[index] = buffer.getShort() & 0xFFFF;
 				}
 			} else if (opcode == 81) {
-				this.anInt2105 = buffer.get() & 0xFF;
+				anInt2105 = buffer.get() & 0xFF;
+			} else if (opcode == 82) {
+				mapAreaId = buffer.getShort() & 0xFFFF;
+			} else if (opcode == 92) {
+				varpID = buffer.getShort() & 0xFFFF;
+				if (varpID == 0xFFFF) {
+					varpID = -1;
+				}
+
+				configId = buffer.getShort() & 0xFFFF;
+				if (configId == 0xFFFF) {
+					configId = -1;
+				}
+
+				int var = buffer.getShort() & 0xFFFF;
+				if (var == 0xFFFF) {
+					var = -1;
+				}
+
+				int length = buffer.get() & 0xFF;
+				configChangeDest = new int[length + 2];
+
+				for (int index = 0; index <= length; ++index) {
+					configChangeDest[index] = buffer.getShort() & 0xFFFF;
+					if (0xFFFF == configChangeDest[index]) {
+						configChangeDest[index] = -1;
+					}
+				}
+
+				configChangeDest[length + 1] = var;
+			} else if (opcode == 249) {
+				int length = buffer.get() & 0xFF;
+
+				params = new HashMap<>(length);
+				for (int i = 0; i < length; i++) {
+					boolean isString = (buffer.get() & 0xFF) == 1;
+					int key = ByteBufferUtils.getMedium(buffer);
+					Object value;
+
+					if (isString) {
+						value = ByteBufferUtils.getString(buffer);
+					}
+
+					else {
+						value = buffer.getInt();
+					}
+
+					params.put(key, value);
+				}
 			}
 		}
 	}

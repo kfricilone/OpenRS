@@ -240,11 +240,4 @@ public class EnumType implements Type {
 		this.stringVals = stringVals;
 	}
 
-	/**
-	 * @return the id
-	 */
-	public int getId() {
-		return id;
-	}
-
 }

@@ -293,6 +293,7 @@ public final class Cache implements Closeable {
 
 				if (e.getIdentifier() == identifier) {
 					identifiers.put(name, i);
+					break;
 				}
 			}
 		}
