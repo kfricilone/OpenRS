@@ -35,14 +35,17 @@ import net.openrs.cache.Container;
 import net.openrs.cache.FileStore;
 import net.openrs.cache.ReferenceTable;
 import net.openrs.cache.sprite.Sprite;
+import net.openrs.cache.type.TypeListManager;
+import net.openrs.cache.type.hitbars.HitBarType;
+import net.openrs.cache.type.hitmarks.HitMarkType;
 
 /**
  * @author Kyle Friz
  * @since Dec 30, 2015
  */
 public class SpriteDumper {
-
-	public static void main(String[] args) throws IOException {
+	
+	public static void main1(String[] args) throws IOException {
 		try (Cache cache = new Cache(FileStore.open(Constants.CACHE_PATH))) {
 			ReferenceTable table = ReferenceTable.decode(Container.decode(cache.getStore().read(255, 8)).getData());
 			for (int i = 0; i < table.capacity(); i++) {
@@ -51,13 +54,13 @@ public class SpriteDumper {
 
 				Container container = cache.read(8, i);
 				Sprite sprite = Sprite.decode(container.getData());
-				
-        File dir = new File(Constants.SPRITE_PATH);
-        
-        if (!dir.exists()) {
-              dir.mkdir();
-        }
-				
+
+				File dir = new File(Constants.SPRITE_PATH);
+
+				if (!dir.exists()) {
+					dir.mkdir();
+				}
+
 				for (int frame = 0; frame < sprite.size(); frame++) {
 					File file = new File(Constants.SPRITE_PATH, i + "_" + frame + ".png");
 					BufferedImage image = sprite.getFrame(frame);
@@ -65,7 +68,7 @@ public class SpriteDumper {
 					ImageIO.write(image, "png", file);
 				}
 			}
-			
+
 			Container container = cache.read(10, cache.getFileId(10, "title.jpg"));
 			byte[] bytes = new byte[container.getData().remaining()];
 			container.getData().get(bytes);

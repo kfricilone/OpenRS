@@ -67,20 +67,60 @@ public final class ByteBufferUtils {
 	 *            The buffer.
 	 * @return The decoded string.
 	 */
-	public static String getJagexString(ByteBuffer buf) {
+	public static String getString(ByteBuffer buf) {
 		StringBuilder bldr = new StringBuilder();
 		int b;
 		while ((b = buf.get()) != 0) {
 			if (b >= 127 && b < 160) {
 				char curChar = CHARACTERS[b - 128];
-				if (curChar != 0) {
-					bldr.append(curChar);
+				if (curChar == 0) {
+					curChar = 63;
 				}
+				
+				bldr.append(curChar);
 			} else {
 				bldr.append((char) b);
 			}
 		}
 		return bldr.toString();
+	}
+
+	
+	/**
+	 * Gets a null-terminated string from the specified buffer, using a modified
+	 * ISO-8859-1 character set.
+	 * 
+	 * @param buf
+	 *            The buffer.
+	 * @return The decoded string.
+	 */
+	public static String getPrefixedString(ByteBuffer buf) {
+		if (buf.get() == 0)
+			return getString(buf);
+		
+		return null;
+	}
+	
+	/**
+	 * Gets a char from the specified buffer, using a modified
+	 * ISO-8859-1 character set.
+	 * 
+	 * @param buf
+	 *            The buffer.
+	 * @return The decoded string.
+	 */
+	public static char getJagexChar(ByteBuffer buf) {
+		StringBuilder bldr = new StringBuilder();
+		int b = buf.get() & 0xFF;
+		if (b >= 127 && b < 160) {
+			char curChar = CHARACTERS[b - 128];
+			if (curChar == 0) {
+				curChar = 63;
+			}
+			
+			b = curChar;
+		}
+		return (char) b;
 	}
 	
 	/**
@@ -203,22 +243,7 @@ public final class ByteBufferUtils {
 		builder.append("]");
 		return builder.toString();
 	}
-
-	/**
-	 * Creates a string from bytes in the buffer
-	 * 
-	 * @param buffer
-	 * @return
-	 */
-	public static String getString(ByteBuffer buf) {
-		StringBuilder bldr = new StringBuilder();
-		int b;
-		while ((b = (buf.get() & 0xFF)) != 0) {
-			bldr.append((char) b);
-		}
-		return bldr.toString();
-	}
-
+	
 	/**
 	 * Puts a 317 format String into the buffer
 	 * @param buffer

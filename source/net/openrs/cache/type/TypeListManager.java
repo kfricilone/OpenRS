@@ -26,6 +26,10 @@ import net.openrs.cache.type.areas.AreaType;
 import net.openrs.cache.type.areas.AreaTypeList;
 import net.openrs.cache.type.enums.EnumType;
 import net.openrs.cache.type.enums.EnumTypeList;
+import net.openrs.cache.type.hitbars.HitBarType;
+import net.openrs.cache.type.hitbars.HitBarTypeList;
+import net.openrs.cache.type.hitmarks.HitMarkType;
+import net.openrs.cache.type.hitmarks.HitMarkTypeList;
 import net.openrs.cache.type.identkits.IdentkitType;
 import net.openrs.cache.type.identkits.IdentkitTypeList;
 import net.openrs.cache.type.invs.InvType;
@@ -38,10 +42,14 @@ import net.openrs.cache.type.objects.ObjectType;
 import net.openrs.cache.type.objects.ObjectTypeList;
 import net.openrs.cache.type.overlays.OverlayType;
 import net.openrs.cache.type.overlays.OverlayTypeList;
+import net.openrs.cache.type.params.ParamTypeList;
+import net.openrs.cache.type.params.ParamType;
 import net.openrs.cache.type.sequences.SequenceType;
 import net.openrs.cache.type.sequences.SequenceTypeList;
 import net.openrs.cache.type.spotanims.SpotAnimType;
 import net.openrs.cache.type.spotanims.SpotAnimTypeList;
+import net.openrs.cache.type.structs.StructType;
+import net.openrs.cache.type.structs.StructTypeList;
 import net.openrs.cache.type.underlays.UnderlayType;
 import net.openrs.cache.type.underlays.UnderlayTypeList;
 import net.openrs.cache.type.varbits.VarBitType;
@@ -75,7 +83,11 @@ public class TypeListManager {
 	private static final VarClientStringTypeList varcstr = new VarClientStringTypeList();
 	private static final VarPlayerTypeList varp = new VarPlayerTypeList();
 	private static final AreaTypeList area = new AreaTypeList();
-
+	private static final ParamTypeList param = new ParamTypeList();
+	private static final StructTypeList struct = new StructTypeList();
+	private static final HitMarkTypeList hitmark = new HitMarkTypeList();
+	private static final HitBarTypeList hitbar = new HitBarTypeList();
+	
 	public static void initialize(Cache cache) {
 		enm.initialize(cache);
 		ident.initialize(cache);
@@ -92,6 +104,86 @@ public class TypeListManager {
 		varcstr.initialize(cache);
 		varp.initialize(cache);
 		area.initialize(cache);
+		param.initialize(cache);
+		struct.initialize(cache);
+		hitmark.initialize(cache);
+		hitbar.initialize(cache);
+	}
+	
+	public static final int enumSize() {
+		return enm.size();
+	}
+	
+	public static final int identSize() {
+		return ident.size();
+	}
+	
+	public static final int invSize() {
+		return inv.size();
+	}
+	
+	public static final int itemSize() {
+		return item.size();
+	}
+	
+	public static final int npcSize() {
+		return npc.size();
+	}
+	
+	public static final int objSize() {
+		return obj.size();
+	}
+	
+	public static final int overSize() {
+		return over.size();
+	}
+	
+	public static final int seqSize() {
+		return seq.size();
+	}
+	
+	public static final int spotSize() {
+		return spot.size();
+	}
+	
+	public static final int underSize() {
+		return under.size();
+	}
+	
+	public static final int varbitSize() {
+		return varbit.size();
+	}
+	
+	public static final int varcSize() {
+		return varc.size();
+	}
+	
+	public static final int varcstrSize() {
+		return varcstr.size();
+	}
+	
+	public static final int varpSize() {
+		return varp.size();
+	}
+	
+	public static final int areaSize() {
+		return area.size();
+	}
+	
+	public static final int paramSize() {
+		return param.size();
+	}
+	
+	public static final int structSize() {
+		return struct.size();
+	}
+	
+	public static final int hitmarkSize() {
+		return hitmark.size();
+	}
+	
+	public static final int hitbarSize() {
+		return hitbar.size();
 	}
 
 	public static final EnumType lookupEnum(int id) {
@@ -154,6 +246,22 @@ public class TypeListManager {
 		return area.list(id);
 	}
 	
+	public static final ParamType lookupParam(int id) {
+		return param.list(id);
+	}
+	
+	public static final StructType lookupStruct(int id) {
+		return struct.list(id);
+	}
+	
+	public static final HitMarkType lookupHitMark(int id) {
+		return hitmark.list(id);
+	}
+	
+	public static final HitBarType lookupHitBar(int id) {
+		return hitbar.list(id);
+	}
+	
 	public static void print() {
 		item.print();
 		ident.print();
@@ -170,6 +278,10 @@ public class TypeListManager {
 		seq.print();
 		inv.print();
 		area.print();
+		param.print();
+		struct.print();
+		hitmark.print();
+		hitbar.print();
 	}
 
 }

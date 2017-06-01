@@ -28,21 +28,25 @@ package net.openrs.cache.type;
  */
 public enum ConfigArchive {
 
-	ENUM(8), 
+	AREA(35),
+	ENUM(8),
+	HITBAR(33),
+	HITMARK(32),
 	IDENTKIT(3), 
 	ITEM(10), 
 	INV(5), 
 	NPC(9), 
 	OBJECT(6), 
 	OVERLAY(4), 
+	PARAMS(11),
 	SEQUENCE(12), 
-	SPOTANIM(13), 
+	SPOTANIM(13),
+	STRUCT(34),
 	UNDERLAY(1), 
 	VARBIT(14), 
 	VARCLIENT(19), 
 	VARCLIENTSTRING(15), 
-	VARPLAYER(16),
-	AREA(35);
+	VARPLAYER(16);
 
 	private final int id;
 
