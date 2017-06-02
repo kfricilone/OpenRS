@@ -42,7 +42,6 @@ public class ObjectType implements Type {
 	private int[] objectModels;
 	private int[] objectTypes;
 	private short[] recolorToFind;
-	private int mapFunctionID = -1;
 	private short[] textureToReplace;
 	private int sizeX = 1;
 	private int sizeY = 1;
@@ -137,7 +136,7 @@ public class ObjectType implements Type {
 					animationID = -1;
 				}
 			} else if (opcode == 27) {
-				anInt2094 = 192909523;
+				anInt2094 = 1;
 			} else if (opcode == 28) {
 				anInt2069 = buffer.get() & 0xFF;
 			} else if (opcode == 29) {
@@ -168,9 +167,6 @@ public class ObjectType implements Type {
 					retextureToFind[index] = (short) (buffer.getShort() & 0xFFFF);
 					textureToReplace[index] = (short) (buffer.getShort() & 0xFFFF);
 				}
-
-			} else if (opcode == 60) {
-				mapFunctionID = buffer.getShort() & 0xFFFF;
 			} else if (opcode == 62) {
 				aBool2108 = true;
 			} else if (opcode == 64) {
@@ -406,21 +402,6 @@ public class ObjectType implements Type {
 	 */
 	public void setRecolorToFind(short[] recolorToFind) {
 		this.recolorToFind = recolorToFind;
-	}
-
-	/**
-	 * @return the mapIconID
-	 */
-	public int getMapFunctionID() {
-		return mapFunctionID;
-	}
-
-	/**
-	 * @param mapFunctionID
-	 *            the mapFunctionID to set
-	 */
-	public void setMapFunctionID(int mapFunctionID) {
-		this.mapFunctionID = mapFunctionID;
 	}
 
 	/**
@@ -931,6 +912,14 @@ public class ObjectType implements Type {
 	 */
 	public void setaBool2114(boolean aBool2114) {
 		this.aBool2114 = aBool2114;
+	}
+
+	public final int getMapAreaId() {
+		return mapAreaId;
+	}
+
+	public final void setMapAreaId(int mapAreaId) {
+		this.mapAreaId = mapAreaId;
 	}
 
 }

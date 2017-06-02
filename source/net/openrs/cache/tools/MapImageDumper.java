@@ -39,6 +39,7 @@ import net.openrs.cache.sprite.Sprite;
 import net.openrs.cache.sprite.Sprites;
 import net.openrs.cache.sprite.Textures;
 import net.openrs.cache.type.TypeListManager;
+import net.openrs.cache.type.areas.AreaType;
 import net.openrs.cache.type.objects.ObjectType;
 import net.openrs.cache.type.overlays.OverlayType;
 import net.openrs.cache.type.underlays.UnderlayType;
@@ -54,7 +55,6 @@ public class MapImageDumper {
 	private final List<Integer> flags = new ArrayList<>();
 	
 	private final Map<Integer, Image> mapIcons = new HashMap<>();
-	private final Map<Integer, Image> mapFunctions = new HashMap<>();
 	
 	private Region lowestX;
 	private Region lowestY;
@@ -127,16 +127,10 @@ public class MapImageDumper {
 		}
 		
 		final Sprite mapscene = Sprites.getSprite("mapscene");
-		final Sprite mapfunction = Sprites.getSprite("mapfunction");
 		
 		for (int i = 0; i < mapscene.size(); i++)
 		{
 			mapIcons.put(i, mapscene.getFrame(i).getScaledInstance(5, 6, 0));
-		}
-		
-		for (int i = 0; i < mapfunction.size(); i++)
-		{
-			mapFunctions.put(i, mapfunction.getFrame(i));
 		}
 	}
 	
@@ -379,9 +373,10 @@ public class MapImageDumper {
 				int drawX = drawBaseX + localX;
 				int drawY = drawBaseY + (63 - localY);
 
-				if (objType.getMapFunctionID() != -1)
+				if (objType.getMapAreaId() != -1)
 				{
-					Image spriteImage = mapFunctions.get(objType.getMapFunctionID());
+					AreaType areaType = TypeListManager.lookupArea(objType.getMapAreaId());
+					Image spriteImage = Sprites.getSprite(areaType.getSpriteId()).getFrame(0);
 					graphics.drawImage(spriteImage, drawX * MAP_SCALE, drawY * MAP_SCALE, null);
 				}
 			}
@@ -395,8 +390,8 @@ public class MapImageDumper {
 		
 			int baseX = region.getBaseX();
 			int baseY = region.getBaseY();
-			int drawBaseX = 10 + baseX - lowestX.getBaseX();
-			int drawBaseY = 10 + highestY.getBaseY() - baseY;
+			int drawBaseX = baseX - lowestX.getBaseX();
+			int drawBaseY = highestY.getBaseY() - baseY;
 			
 			Graphics2D graphics = fullImage.createGraphics();
 
