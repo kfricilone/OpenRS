@@ -22,6 +22,7 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +33,7 @@ import javax.imageio.ImageIO;
 
 import net.openrs.cache.Cache;
 import net.openrs.cache.Constants;
+import net.openrs.cache.Container;
 import net.openrs.cache.FileStore;
 import net.openrs.cache.region.Location;
 import net.openrs.cache.region.Region;
@@ -91,14 +93,18 @@ public class MapImageDumper {
 			
 			if (loc != -1)
 			{
+				ByteBuffer buffer = cache.getStore().read(5, loc);
 				try
 				{
-					region.loadLocations(cache.read(5, loc, XTEAManager.lookupMap(i)).getData());
+					region.loadLocations(Container.decode(buffer, XTEAManager.lookupMap(i)).getData());
 				}
 				
 				catch (Exception e)
 				{
-					flags.add(i);
+					if (buffer.limit() != 32)
+					{
+						flags.add(i);
+					}
 				}
 			}
 			
