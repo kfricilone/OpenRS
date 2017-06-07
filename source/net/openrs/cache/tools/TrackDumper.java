@@ -50,7 +50,7 @@ public final class TrackDumper {
 				
 				double progress = (double) (i + 1) / list.getTrack1s().length * 100;
 				
-				System.out.printf("dumping track1 %d out of %d %.2f%s\n", i, list.getTrack1s().length, progress, "%");				
+				System.out.printf("dumping track1 %d out of %d %.2f%s\n", (i + 1), list.getTrack1s().length, progress, "%");				
 				
 			}
 			
@@ -68,7 +68,7 @@ public final class TrackDumper {
 				
 				double progress = (double) (i + 1) / list.getTrack2s().length * 100;
 				
-				System.out.printf("dumping track2 %d out of %d %.2f%s\n", i, list.getTrack2s().length, progress, "%");				
+				System.out.printf("dumping track2 %d out of %d %.2f%s\n", (i + 1), list.getTrack2s().length, progress, "%");				
 				
 			}
 

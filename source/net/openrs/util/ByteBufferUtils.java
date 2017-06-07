@@ -109,7 +109,6 @@ public final class ByteBufferUtils {
 	 * @return The decoded string.
 	 */
 	public static char getJagexChar(ByteBuffer buf) {
-		StringBuilder bldr = new StringBuilder();
 		int b = buf.get() & 0xFF;
 		if (b >= 127 && b < 160) {
 			char curChar = CHARACTERS[b - 128];

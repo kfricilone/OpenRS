@@ -21,6 +21,7 @@
  */
 package net.openrs.cache.tools;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -35,9 +36,7 @@ import net.openrs.cache.Container;
 import net.openrs.cache.FileStore;
 import net.openrs.cache.ReferenceTable;
 import net.openrs.cache.sprite.Sprite;
-import net.openrs.cache.type.TypeListManager;
-import net.openrs.cache.type.hitbars.HitBarType;
-import net.openrs.cache.type.hitmarks.HitMarkType;
+import net.openrs.util.ImageUtils;
 
 /**
  * @author Kyle Friz
@@ -63,16 +62,24 @@ public class SpriteDumper {
 
 				for (int frame = 0; frame < sprite.size(); frame++) {
 					File file = new File(Constants.SPRITE_PATH, i + "_" + frame + ".png");
-					BufferedImage image = sprite.getFrame(frame);
+					
+					BufferedImage image = ImageUtils.createColoredBackground(ImageUtils.makeColorTransparent(sprite.getFrame(frame), Color.WHITE), new java.awt.Color(0xFF00FF, false));
 
 					ImageIO.write(image, "png", file);
 				}
+				
+				double progress = (double) (i + 1) / table.capacity() * 100;
+				
+				System.out.printf("%d out of %d %.2f%s\n", (i + 1), table.capacity(), progress, "%");	
+				
 			}
 
 			Container container = cache.read(10, cache.getFileId(10, "title.jpg"));
 			byte[] bytes = new byte[container.getData().remaining()];
 			container.getData().get(bytes);
 			Files.write(Paths.get(Constants.SPRITE_PATH).resolve("title.jpg"), bytes);
+			
+
 		}
 	}
 
