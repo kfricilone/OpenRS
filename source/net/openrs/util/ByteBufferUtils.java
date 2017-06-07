@@ -76,7 +76,7 @@ public final class ByteBufferUtils {
 				if (curChar == 0) {
 					curChar = 63;
 				}
-				
+
 				bldr.append(curChar);
 			} else {
 				bldr.append((char) b);
@@ -85,7 +85,6 @@ public final class ByteBufferUtils {
 		return bldr.toString();
 	}
 
-	
 	/**
 	 * Gets a null-terminated string from the specified buffer, using a modified
 	 * ISO-8859-1 character set.
@@ -97,13 +96,13 @@ public final class ByteBufferUtils {
 	public static String getPrefixedString(ByteBuffer buf) {
 		if (buf.get() == 0)
 			return getString(buf);
-		
+
 		return null;
 	}
-	
+
 	/**
-	 * Gets a char from the specified buffer, using a modified
-	 * ISO-8859-1 character set.
+	 * Gets a char from the specified buffer, using a modified ISO-8859-1
+	 * character set.
 	 * 
 	 * @param buf
 	 *            The buffer.
@@ -117,12 +116,12 @@ public final class ByteBufferUtils {
 			if (curChar == 0) {
 				curChar = 63;
 			}
-			
+
 			b = curChar;
 		}
 		return (char) b;
 	}
-	
+
 	/**
 	 * Gets a unsigned smart from the buffer.
 	 * 
@@ -137,7 +136,7 @@ public final class ByteBufferUtils {
 		else
 			return (buf.getShort() & 0xFFFF) - 32768;
 	}
-	
+
 	/**
 	 * Gets a signed smart from the buffer.
 	 * 
@@ -161,7 +160,7 @@ public final class ByteBufferUtils {
 	 * @return The value.
 	 */
 	public static int getSmartInt(ByteBuffer buffer) {
-		if (buffer.get(buffer.position()) < 0) 
+		if (buffer.get(buffer.position()) < 0)
 			return buffer.getInt() & 0x7fffffff;
 		return buffer.getShort() & 0xFFFF;
 	}
@@ -243,9 +242,10 @@ public final class ByteBufferUtils {
 		builder.append("]");
 		return builder.toString();
 	}
-	
+
 	/**
 	 * Puts a 317 format String into the buffer
+	 * 
 	 * @param buffer
 	 * @param text
 	 */
@@ -253,28 +253,70 @@ public final class ByteBufferUtils {
 		buffer.put(val.getBytes());
 		buffer.put((byte) 10);
 	}
-	
+
 	/**
 	 * Clones a bytebuffer
+	 * 
 	 * @param original
 	 * @return
 	 */
 	public static ByteBuffer clone(final ByteBuffer original) {
-	    // Create clone with same capacity as original.
-	    final ByteBuffer clone = (original.isDirect()) ?
-	        ByteBuffer.allocateDirect(original.capacity()) :
-	        ByteBuffer.allocate(original.capacity());
+		// Create clone with same capacity as original.
+		final ByteBuffer clone = (original.isDirect()) ? ByteBuffer.allocateDirect(original.capacity())
+				: ByteBuffer.allocate(original.capacity());
 
-	    // Create a read-only copy of the original.
-	    // This allows reading from the original without modifying it.
-	    final ByteBuffer readOnlyCopy = original.asReadOnlyBuffer();
+		// Create a read-only copy of the original.
+		// This allows reading from the original without modifying it.
+		final ByteBuffer readOnlyCopy = original.asReadOnlyBuffer();
 
-	    // Read from the original.
-	    clone.put(readOnlyCopy);
+		// Read from the original.
+		clone.put(readOnlyCopy);
 
-	    return clone;
+		return clone;
 	}
-	
+
+	public static void putVarInt(ByteBuffer buffer, int var1) {
+		if ((var1 & -128) != 0) {
+			if ((var1 & -16384) != 0) {
+				if ((var1 & -2097152) != 0) {
+					if ((var1 & -268435456) != 0) {
+						buffer.put((byte) (var1 >>> 28 | 128));
+					}
+
+					buffer.put((byte) (var1 >>> 21 | 128));
+				}
+
+				buffer.put((byte) (var1 >>> 14 | 128));
+			}
+
+			buffer.put((byte) (var1 >>> 7 | 128));
+		}
+
+		buffer.put((byte) (var1 & 127));
+	}
+
+	public static void putLengthFromMark(ByteBuffer buffer, int var1) {
+		buffer.array()[buffer.position() - var1 - 4] = (byte) (var1 >> 24);
+		buffer.array()[buffer.position() - var1 - 3] = (byte) (var1 >> 16);
+		buffer.array()[buffer.position() - var1 - 2] = (byte) (var1 >> 8);
+		buffer.array()[buffer.position() - var1 - 1] = (byte) var1;
+	}
+
+	public static int getVarInt(ByteBuffer buffer) {
+		byte var1 = buffer.get();
+
+		int var2;
+		for (var2 = 0; var1 < 0; var1 = buffer.get()) {
+			var2 = (var2 | var1 & 127) << 7;
+		}
+
+		return var2 | var1;
+	}
+
+	public static void skip(ByteBuffer buffer, int skip) {
+		buffer.position(buffer.position() + skip);
+	}
+
 	/**
 	 * Default private constructor to prevent instantiation.
 	 */
