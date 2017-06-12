@@ -48,14 +48,13 @@ import net.openrs.cache.type.objects.ObjectTypeList;
 public class ObjectModelDumper {
 
 	public static void main(String[] args) throws IOException {
+		File directory = new File(Constants.MODEL_PATH + "/objects");			
+		
+		if (!directory.exists()) {
+			directory.mkdirs();
+		}
+		
 		try (Cache cache = new Cache(FileStore.open(Constants.CACHE_PATH))) {
-			
-			File parent = new File(Constants.MODEL_PATH + File.separator + "objects");			
-			
-			if (!parent.exists()) {
-				parent.mkdirs();
-			}
-
 			ObjectTypeList list = new ObjectTypeList();			
 
 			list.initialize(cache);
@@ -99,7 +98,7 @@ public class ObjectModelDumper {
 				byte[] bytes = new byte[container.getData().limit()];
 				container.getData().get(bytes);
 
-				try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(new File(parent, i + ".dat")))) {
+				try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(new File(directory, i + ".dat")))) {
 					dos.write(bytes);
 				}
 				

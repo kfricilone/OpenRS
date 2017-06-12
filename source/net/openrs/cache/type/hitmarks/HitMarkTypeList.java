@@ -79,9 +79,9 @@ public class HitMarkTypeList implements TypeList<HitMarkType> {
 				count++;
 			}
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, "Error Loading HitMark(s)!", e);
+			logger.log(Level.SEVERE, "Error Loading HitMarkType(s)!", e);
 		}
-		logger.info("Loaded " + count + " HitMarks(s)!");
+		logger.info("Loaded " + count + " HitMarksType(s)!");
 	}
 
 	@Override

@@ -47,14 +47,13 @@ import net.openrs.cache.type.items.ItemTypeList;
 public class ItemModelDumper {
 
 	public static void main(String[] args) throws IOException {
+		File directory = new File(Constants.MODEL_PATH + "/items");			
+		
+		if (!directory.exists()) {
+			directory.mkdirs();
+		}
+		
 		try (Cache cache = new Cache(FileStore.open(Constants.CACHE_PATH))) {
-			
-			File parent = new File(Constants.MODEL_PATH + File.separator + "items");			
-			
-			if (!parent.exists()) {
-				parent.mkdirs();
-			}
-
 			ItemTypeList itemType = new ItemTypeList();
 
 			itemType.initialize(cache);
@@ -115,7 +114,7 @@ public class ItemModelDumper {
 
 			}
 
-			ReferenceTable table = ReferenceTable.decode(Container.decode(cache.getStore().read(255, 7)).getData());
+			ReferenceTable table = cache.getReferenceTable(7);
 
 			Iterator<Integer> itr = set.iterator();
 			
@@ -136,7 +135,7 @@ public class ItemModelDumper {
 				byte[] bytes = new byte[container.getData().limit()];
 				container.getData().get(bytes);
 
-				try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(new File(parent, i + ".dat")))) {
+				try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(new File(directory, i + ".dat")))) {
 					dos.write(bytes);
 				}
 				

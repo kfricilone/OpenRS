@@ -136,7 +136,7 @@ public class MapImageDumper {
 		
 		for (int i = 0; i < mapscene.size(); i++)
 		{
-			mapIcons.put(i, mapscene.getFrame(i).getScaledInstance(5, 6, 0));
+			mapIcons.put(i, mapscene.getFrame(i).getScaledInstance(4, 5, 0));
 		}
 	}
 	
@@ -160,6 +160,8 @@ public class MapImageDumper {
 		
 		BufferedImage baseImage = new BufferedImage(dimX, dimY, BufferedImage.TYPE_INT_RGB);
 		BufferedImage fullImage = new BufferedImage(dimX, dimY, BufferedImage.TYPE_INT_RGB);
+		
+		Graphics2D graphics = fullImage.createGraphics();
 		
 		//Draw Underlay Map - Pass 1
 		for (Region region : regions)
@@ -326,8 +328,6 @@ public class MapImageDumper {
 			int drawBaseX = baseX - lowestX.getBaseX();
 			int drawBaseY = highestY.getBaseY() - baseY;
 			
-			Graphics2D graphics = fullImage.createGraphics();
-			
 			for (Location location : region.getLocations())
 			{
 				if (location.getPosition().getHeight() != 0)
@@ -349,8 +349,6 @@ public class MapImageDumper {
 					graphics.drawImage(spriteImage, drawX * MAP_SCALE, drawY * MAP_SCALE, null);
 				}
 			}
-			
-			graphics.dispose();
 		}
 		
 		//Draw Icons Map - Pass 5
@@ -361,8 +359,6 @@ public class MapImageDumper {
 			int baseY = region.getBaseY();
 			int drawBaseX = baseX - lowestX.getBaseX();
 			int drawBaseY = highestY.getBaseY() - baseY;
-			
-			Graphics2D graphics = fullImage.createGraphics();
 			
 			for (Location location : region.getLocations())
 			{
@@ -383,11 +379,9 @@ public class MapImageDumper {
 				{
 					AreaType areaType = TypeListManager.lookupArea(objType.getMapAreaId());
 					Image spriteImage = Sprites.getSprite(areaType.getSpriteId()).getFrame(0);
-					graphics.drawImage(spriteImage, drawX * MAP_SCALE, drawY * MAP_SCALE, null);
+					graphics.drawImage(spriteImage, (drawX - 1) * MAP_SCALE, (drawY - 1) * MAP_SCALE, null);
 				}
 			}
-			
-			graphics.dispose();
 		}
 		
 		//Label/Outline/Fill regions - Pass 6
@@ -398,8 +392,6 @@ public class MapImageDumper {
 			int baseY = region.getBaseY();
 			int drawBaseX = baseX - lowestX.getBaseX();
 			int drawBaseY = highestY.getBaseY() - baseY;
-			
-			Graphics2D graphics = fullImage.createGraphics();
 
 			if (LABEL)
 			{
@@ -421,10 +413,10 @@ public class MapImageDumper {
 					graphics.fillRect(drawBaseX * MAP_SCALE, drawBaseY * MAP_SCALE, 64 * MAP_SCALE, 64 * MAP_SCALE);
 				}
 			}
-
-			graphics.dispose();
 			
 		}
+		
+		graphics.dispose();
 		
 		ImageIO.write(baseImage, "png", new File("base_image.png"));
 		ImageIO.write(fullImage, "png", new File("full_image.png"));

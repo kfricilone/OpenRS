@@ -40,6 +40,12 @@ import net.openrs.cache.util.XTEAManager;
 public class MapDumper {
 
 	public static void main(String[] args) throws IOException {
+        File directory = new File(Constants.MAP_PATH);
+        
+        if (!directory.exists()) {
+              directory.mkdir();
+        }
+        
 		try (Cache cache = new Cache(FileStore.open(Constants.CACHE_PATH))) {
 			for (int i = 0; i < 32768; i++) {			
 				int[] keys = XTEAManager.lookupMap(i);
@@ -54,12 +60,6 @@ public class MapDumper {
 					Container container = cache.read(5, map);
 					byte[] bytes = new byte[container.getData().limit()];
 					container.getData().get(bytes);
-					
-	         File dir = new File(Constants.MAP_PATH);
-	          
-	          if (!dir.exists()) {
-	                dir.mkdir();
-	          }
 
 					File file = new File(Constants.MAP_PATH, "m" + x + "_" + y + ".dat");
 

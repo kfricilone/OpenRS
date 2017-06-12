@@ -34,14 +34,8 @@ public final class CacheVerifier {
 						continue;
 					}
 
-					byte[] bytes = new byte[buffer.limit() - 2]; // last two
-																	// bytes are
-																	// the
-																	// version
-																	// and
-																	// shouldn't
-																	// be
-																	// included
+					/* last two bytes are the version and shouldn't be included */
+					byte[] bytes = new byte[buffer.limit() - 2];
 					buffer.position(0);
 					buffer.get(bytes, 0, bytes.length);
 

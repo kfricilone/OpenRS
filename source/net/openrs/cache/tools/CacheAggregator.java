@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.zip.CRC32;
 
+import net.openrs.cache.Cache;
 import net.openrs.cache.Constants;
 import net.openrs.cache.Container;
 import net.openrs.cache.FileStore;
@@ -13,31 +14,31 @@ import net.openrs.cache.ReferenceTable.Entry;
 public final class CacheAggregator {
 
 	public static void main(String[] args) throws IOException {
-		FileStore otherStore = FileStore.open(Constants.CACHEO_PATH);
-		FileStore store = FileStore.open(Constants.CACHE_PATH);
+		try (Cache otherCache = new Cache(FileStore.open(Constants.CACHEO_PATH));
+				Cache cache = new Cache(FileStore.open(Constants.CACHE_PATH))) {
+			for (int type = 0; type < cache.getFileCount(255); type++) {
+				ReferenceTable otherTable = otherCache.getReferenceTable(type);
+				ReferenceTable table = cache.getReferenceTable(type);
+				for (int file = 0; file < table.capacity(); file++) {
+					Entry entry = table.getEntry(file);
+					if (entry == null)
+						continue;
 
-		for (int type = 0; type < store.getFileCount(255); type++) {
-			ReferenceTable otherTable = ReferenceTable.decode(Container.decode(otherStore.read(255, type)).getData());
-			ReferenceTable table = ReferenceTable.decode(Container.decode(store.read(255, type)).getData());
-			for (int file = 0; file < table.capacity(); file++) {
-				Entry entry = table.getEntry(file);
-				if (entry == null)
-					continue;
-
-				if (isRepackingRequired(store, entry, type, file)) {
-					Entry otherEntry = otherTable.getEntry(file);
-					if (entry.getVersion() == otherEntry.getVersion() && entry.getCrc() == otherEntry.getCrc()) {
-						store.write(type, file, otherStore.read(type, file));
+					if (isRepackingRequired(cache, entry, type, file)) {
+						Entry otherEntry = otherTable.getEntry(file);
+						if (entry.getVersion() == otherEntry.getVersion() && entry.getCrc() == otherEntry.getCrc()) {
+							cache.getStore().write(type, file, otherCache.getStore().read(type, file));
+						}
 					}
 				}
 			}
 		}
 	}
 
-	private static boolean isRepackingRequired(FileStore store, Entry entry, int type, int file) {
+	private static boolean isRepackingRequired(Cache store, Entry entry, int type, int file) {
 		ByteBuffer buffer;
 		try {
-			buffer = store.read(type, file);
+			buffer = store.getStore().read(type, file);
 		} catch (IOException ex) {
 			return true;
 		}
@@ -46,9 +47,8 @@ public final class CacheAggregator {
 			return true;
 		}
 
-		byte[] bytes = new byte[buffer.limit() - 2];// last two bytes are the
-													// version and shouldn't be
-													// included
+		/* last two bytes are the version and shouldn't be included */
+		byte[] bytes = new byte[buffer.limit() - 2];
 		buffer.position(0);
 		buffer.get(bytes, 0, bytes.length);
 

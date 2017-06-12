@@ -38,8 +38,7 @@ public class MapVerifier {
 	public static void main(String[] args) {
 		int count = 0;
 
-		try {
-			Cache cache = new Cache(FileStore.open(Constants.CACHE_PATH));
+		try (Cache cache = new Cache(FileStore.open(Constants.CACHE_PATH))) {
 			for (int i = 0; i < 32_768; i++) {
 				int[] keys = XTEAManager.lookupMap(i);
 				int land = cache.getFileId(5, "l" + (i >> 8) + "_" + (i & 0xFF));
@@ -62,7 +61,6 @@ public class MapVerifier {
 					}
 				}
 			}
-			cache.close();
 
 			System.out.println("Incorrect: " + count);
 		} catch (Exception e) {

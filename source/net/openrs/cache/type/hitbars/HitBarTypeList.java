@@ -79,9 +79,9 @@ public class HitBarTypeList implements TypeList<HitBarType> {
 				count++;
 			}
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, "Error Loading HitBar(s)!", e);
+			logger.log(Level.SEVERE, "Error Loading HitBarType(s)!", e);
 		}
-		logger.info("Loaded " + count + " HitBar(s)!");
+		logger.info("Loaded " + count + " HitBarType(s)!");
 	}
 
 	@Override

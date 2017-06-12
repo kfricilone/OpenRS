@@ -136,6 +136,11 @@ public class ReferenceTable {
 		 * The cache index of this entry
 		 */
 		private final int index;
+		
+		/**
+		 * Child identifiers table
+		 */
+		private Identifiers identifiers;
 
 		/**
 		 * The children in this entry.
@@ -363,6 +368,7 @@ public class ReferenceTable {
 		if (table.format >= 6) {
 			table.version = buffer.getInt();
 		}
+		
 		table.flags = buffer.get() & 0xFF;
 
 		/* read the ids */
@@ -385,11 +391,15 @@ public class ReferenceTable {
 		}
 
 		/* read the identifiers if present */
+		int[] identifiersArray = new int[size];
 		if ((table.flags & FLAG_IDENTIFIERS) != 0) {
 			for (int id : ids) {
-				table.entries.get(id).identifier = buffer.getInt();
+				int identifier = buffer.getInt();
+				identifiersArray[id] = identifier;
+				table.entries.get(id).identifier = identifier;
 			}
 		}
+		table.identifiers = new Identifiers(identifiersArray);
 
 		/* read the CRC32 checksums */
 		for (int id : ids) {
@@ -455,9 +465,13 @@ public class ReferenceTable {
 		/* read the child identifiers if present */
 		if ((table.flags & FLAG_IDENTIFIERS) != 0) {
 			for (int id : ids) {
+				identifiersArray = new int[members[id].length];
 				for (int child : members[id]) {
-					table.entries.get(id).entries.get(child).identifier = buffer.getInt();
+					int identifier = buffer.getInt();
+					identifiersArray[child] = identifier;
+					table.entries.get(id).entries.get(child).identifier = identifier;
 				}
+				table.entries.get(id).identifiers = new Identifiers(identifiersArray);
 			}
 		}
 
@@ -521,6 +535,11 @@ public class ReferenceTable {
 	 */
 	private final SortedMap<Integer, Entry> entries = new TreeMap<Integer, Entry>();
 
+	/**
+	 * Identifier table
+	 */
+	private Identifiers identifiers;
+	
 	/**
 	 * Gets the maximum number of entries in this table.
 	 * 
@@ -785,5 +804,14 @@ public class ReferenceTable {
 			}
 		}
 		return (int) sum;
+	}
+
+	/**
+	 * Gets the identifiers table
+	 * 
+	 * @return The table
+	 */
+	public Identifiers getIdentifiers() {
+		return identifiers;
 	}
 }

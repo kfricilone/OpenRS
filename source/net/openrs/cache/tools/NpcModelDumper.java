@@ -48,14 +48,13 @@ import net.openrs.cache.type.npcs.NpcTypeList;
 public class NpcModelDumper {
 
 	public static void main(String[] args) throws IOException {
+		File directory = new File(Constants.MODEL_PATH + "/npcs");			
+		
+		if (!directory.exists()) {
+			directory.mkdirs();
+		}
+		
 		try (Cache cache = new Cache(FileStore.open(Constants.CACHE_PATH))) {
-			
-			File parent = new File(Constants.MODEL_PATH + File.separator + "npcs");			
-			
-			if (!parent.exists()) {
-				parent.mkdirs();
-			}
-
 			NpcTypeList list = new NpcTypeList();			
 
 			list.initialize(cache);
@@ -84,7 +83,7 @@ public class NpcModelDumper {
 
 			}
 
-			ReferenceTable table = ReferenceTable.decode(Container.decode(cache.getStore().read(255, 7)).getData());
+			ReferenceTable table = cache.getReferenceTable(7);
 
 			Iterator<Integer> itr = set.iterator();
 			
@@ -105,7 +104,7 @@ public class NpcModelDumper {
 				byte[] bytes = new byte[container.getData().limit()];
 				container.getData().get(bytes);
 
-				try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(new File(parent, i + ".dat")))) {
+				try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(new File(directory, i + ".dat")))) {
 					dos.write(bytes);
 				}
 				

@@ -46,20 +46,20 @@ import net.openrs.cache.type.hitmarks.HitMarkType;
 public class SpriteDumper {
 	
 	public static void main(String[] args) throws IOException {
+		File directory = new File(Constants.SPRITE_PATH);			
+		
+		if (!directory.exists()) {
+			directory.mkdirs();
+		}
+		
 		try (Cache cache = new Cache(FileStore.open(Constants.CACHE_PATH))) {
-			ReferenceTable table = ReferenceTable.decode(Container.decode(cache.getStore().read(255, 8)).getData());
+			ReferenceTable table = cache.getReferenceTable(8);
 			for (int i = 0; i < table.capacity(); i++) {
 				if (table.getEntry(i) == null)
 					continue;
 
 				Container container = cache.read(8, i);
 				Sprite sprite = Sprite.decode(container.getData());
-
-				File dir = new File(Constants.SPRITE_PATH);
-
-				if (!dir.exists()) {
-					dir.mkdir();
-				}
 
 				for (int frame = 0; frame < sprite.size(); frame++) {
 					File file = new File(Constants.SPRITE_PATH, i + "_" + frame + ".png");
