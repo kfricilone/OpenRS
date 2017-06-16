@@ -59,9 +59,7 @@ public class HitBarTypeList implements TypeList<HitBarType> {
 	public void initialize(Cache cache) {
 		int count = 0;
 		try {
-			Container container = Container.decode(cache.getStore().read(CacheIndex.REFERENCE, CacheIndex.CONFIGS));
-			ReferenceTable table = ReferenceTable.decode(container.getData());
-
+			ReferenceTable table = cache.getReferenceTable(CacheIndex.CONFIGS);
 			Entry entry = table.getEntry(ConfigArchive.HITBAR);
 			Archive archive = Archive.decode(cache.read(CacheIndex.CONFIGS, ConfigArchive.HITBAR).getData(),
 					entry.size());
@@ -79,9 +77,9 @@ public class HitBarTypeList implements TypeList<HitBarType> {
 				count++;
 			}
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, "Error Loading HitBar(s)!", e);
+			logger.log(Level.SEVERE, "Error Loading HitBarType(s)!", e);
 		}
-		logger.info("Loaded " + count + " HitBar(s)!");
+		logger.info("Loaded " + count + " HitBarType(s)!");
 	}
 
 	@Override

@@ -49,9 +49,7 @@ public class Textures {
 	public static void initialize(Cache cache) {
 		int count = 0;
 		try {
-			Container container = Container.decode(cache.getStore().read(CacheIndex.REFERENCE, CacheIndex.TEXTURES));
-			ReferenceTable table = ReferenceTable.decode(container.getData());
-
+			ReferenceTable table = cache.getReferenceTable(CacheIndex.TEXTURES);
 			Entry entry = table.getEntry(0);
 			Archive archive = Archive.decode(cache.read(CacheIndex.TEXTURES, 0).getData(), entry.size());
 
@@ -68,8 +66,7 @@ public class Textures {
 				count++;
 			}
 
-			container = Container.decode(cache.getStore().read(CacheIndex.REFERENCE, CacheIndex.SPRITES));
-			table = ReferenceTable.decode(container.getData());
+			table = cache.getReferenceTable(CacheIndex.SPRITES);
 			for (int id = 0; id < entry.capacity(); id++) {
 				int file = ids[id];
 

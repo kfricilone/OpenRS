@@ -41,7 +41,6 @@ public class TablesEncryptor {
 
 	public static void main(String[] args) {
 		try (Cache cache = new Cache(FileStore.open(Constants.CACHE_PATH))) {
-			
 			for (int type = 0; type < cache.getTypeCount(); type++) {
 				ByteBuffer buf = cache.getStore().read(255, type);
 				if (buf != null && buf.limit() > 0) {

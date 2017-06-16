@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.zip.CRC32;
 
+import net.openrs.cache.Cache;
 import net.openrs.cache.Constants;
 import net.openrs.cache.Container;
 import net.openrs.cache.FileStore;
@@ -13,9 +14,9 @@ import net.openrs.cache.ReferenceTable.Entry;
 public final class CacheVerifier {
 
 	public static void main(String[] args) throws IOException {
-		try (FileStore store = FileStore.open(Constants.CACHE_PATH)) {
-			for (int type = 0; type < store.getFileCount(255); type++) {
-				ReferenceTable table = ReferenceTable.decode(Container.decode(store.read(255, type)).getData());
+		try (Cache cache = new Cache(FileStore.open(Constants.CACHE_PATH))) {
+			for (int type = 0; type < cache.getFileCount(255); type++) {
+				ReferenceTable table = cache.getReferenceTable(type);
 				for (int file = 0; file < table.capacity(); file++) {
 					Entry entry = table.getEntry(file);
 					if (entry == null)
@@ -23,7 +24,7 @@ public final class CacheVerifier {
 
 					ByteBuffer buffer;
 					try {
-						buffer = store.read(type, file);
+						buffer = cache.getStore().read(type, file);
 					} catch (IOException ex) {
 						System.out.println(type + ":" + file + " error");
 						continue;
@@ -34,14 +35,8 @@ public final class CacheVerifier {
 						continue;
 					}
 
-					byte[] bytes = new byte[buffer.limit() - 2]; // last two
-																	// bytes are
-																	// the
-																	// version
-																	// and
-																	// shouldn't
-																	// be
-																	// included
+					/* last two bytes are the version and shouldn't be included */
+					byte[] bytes = new byte[buffer.limit() - 2];
 					buffer.position(0);
 					buffer.get(bytes, 0, bytes.length);
 

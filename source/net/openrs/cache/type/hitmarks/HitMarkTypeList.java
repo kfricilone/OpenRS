@@ -59,9 +59,7 @@ public class HitMarkTypeList implements TypeList<HitMarkType> {
 	public void initialize(Cache cache) {
 		int count = 0;
 		try {
-			Container container = Container.decode(cache.getStore().read(CacheIndex.REFERENCE, CacheIndex.CONFIGS));
-			ReferenceTable table = ReferenceTable.decode(container.getData());
-
+			ReferenceTable table = cache.getReferenceTable(CacheIndex.CONFIGS);
 			Entry entry = table.getEntry(ConfigArchive.HITMARK);
 			Archive archive = Archive.decode(cache.read(CacheIndex.CONFIGS, ConfigArchive.HITMARK).getData(),
 					entry.size());
@@ -79,9 +77,9 @@ public class HitMarkTypeList implements TypeList<HitMarkType> {
 				count++;
 			}
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, "Error Loading HitMark(s)!", e);
+			logger.log(Level.SEVERE, "Error Loading HitMarkType(s)!", e);
 		}
-		logger.info("Loaded " + count + " HitMarks(s)!");
+		logger.info("Loaded " + count + " HitMarksType(s)!");
 	}
 
 	@Override

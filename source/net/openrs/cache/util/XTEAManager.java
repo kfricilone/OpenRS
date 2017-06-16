@@ -67,20 +67,14 @@ public class XTEAManager {
 
                   for (File file : xMapDir.listFiles()) {
                         if (file.getName().endsWith(".txt")) {
-                              List<Integer> keys = new ArrayList<Integer>();
                               Integer regionID = Integer.valueOf(file.getName().substring(0,
                                           file.getName().indexOf(".txt")));
 
-                              Files.lines(Paths.get(".")
+                              int[] keys = Files.lines(Paths.get(".")
                                           .resolve(Constants.XMAP_PATH + file.getName()))
-                                          .forEach((String line) -> {
-                                        	 // try {
-                                        		  if (keys.size() < 4)
-                                        			  keys.add(Integer.valueOf(line));
-                                        	  //} catch (Exception e) { System.out.println(file.getName());}
-                                          });
+                                          .map(Integer::valueOf).mapToInt(Integer::intValue).toArray();
 
-                              maps.put(regionID, listToArray(keys));
+                              maps.put(regionID, keys);
                         }
                   }
 
@@ -92,30 +86,19 @@ public class XTEAManager {
 
                   for (File file : xTableDir.listFiles()) {
                         if (file.getName().endsWith(".txt")) {
-                              List<Integer> keys = new ArrayList<Integer>();
                               Integer typeID = Integer.valueOf(file.getName().substring(0,
                                           file.getName().indexOf(".txt")));
 
-                              Files.lines(Paths.get(".")
-                                          .resolve(Constants.XTABLE_PATH + file.getName()))
-                                          .forEach((String line) -> {
-                                                keys.add(Integer.valueOf(line));
-                                          });
+                              int[] keys = Files.lines(Paths.get(".")
+                                      .resolve(Constants.XTABLE_PATH + file.getName()))
+                                      .map(Integer::valueOf).mapToInt(Integer::intValue).toArray();
 
-                              tables.put(typeID, listToArray(keys));
+                              tables.put(typeID, keys);
                         }
                   }
             } catch (Exception e) {
                   e.printStackTrace();
             }
-      }
-      
-      private static int[] listToArray(List<Integer> list){
-    	  int[] out = new int[list.size()];
-    	  for(int i = 0; i < list.size(); i++){
-    		  out[i] = list.get(i);
-    	  }
-    	  return out;
       }
       
       public static void touch() { };

@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 
 import net.openrs.cache.Cache;
 import net.openrs.cache.Container;
+import net.openrs.cache.Identifiers;
 import net.openrs.cache.ReferenceTable;
 import net.openrs.cache.ReferenceTable.Entry;
 import net.openrs.cache.type.CacheIndex;
@@ -36,15 +37,15 @@ public class Sprites {
 	private static Logger logger = Logger.getLogger(Sprites.class.getName());
 	
 	private static Sprite[] sprites;
-	private static final Map<Integer, Integer> hashes = new HashMap<>();
+	
+	private static Identifiers identifiers;
 	
 	public static void initialize(Cache cache)
 	{
 		int count = 0;
 		try
 		{
-			Container container = Container.decode(cache.getStore().read(CacheIndex.REFERENCE, CacheIndex.SPRITES));
-			ReferenceTable table = ReferenceTable.decode(container.getData());
+			ReferenceTable table = cache.getReferenceTable(8);
 			
 			sprites = new Sprite[table.capacity()];
 			
@@ -57,10 +58,10 @@ public class Sprites {
 				Container c = cache.read(CacheIndex.SPRITES, i);
 				Sprite sprite = Sprite.decode(c.getData());
 				sprites[i] = sprite;
-				hashes.put(e.getIdentifier(), i);
-				
 				count++;
 			}
+			
+			identifiers = table.getIdentifiers();
 			
 		}
 		
@@ -78,7 +79,12 @@ public class Sprites {
 	
 	public static final Sprite getSprite(String name)
 	{
-		return sprites[hashes.get(Djb2.hash(name))];
+		int id = identifiers.getFile(Djb2.hash(name));
+		if (id == -1) {
+			return null;
+		}
+		
+		return sprites[id];
 	}
 	
 }

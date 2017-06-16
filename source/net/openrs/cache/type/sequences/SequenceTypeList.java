@@ -59,9 +59,7 @@ public class SequenceTypeList implements TypeList<SequenceType> {
 	public void initialize(Cache cache) {
 		int count = 0;
 		try {
-			Container container = Container.decode(cache.getStore().read(CacheIndex.REFERENCE, CacheIndex.CONFIGS));
-			ReferenceTable table = ReferenceTable.decode(container.getData());
-
+			ReferenceTable table = cache.getReferenceTable(CacheIndex.CONFIGS);
 			Entry entry = table.getEntry(ConfigArchive.SEQUENCE);
 			Archive archive = Archive.decode(cache.read(CacheIndex.CONFIGS, ConfigArchive.SEQUENCE).getData(),
 					entry.size());

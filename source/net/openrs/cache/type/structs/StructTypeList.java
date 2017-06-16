@@ -59,9 +59,7 @@ public class StructTypeList implements TypeList<StructType> {
 	public void initialize(Cache cache) {
 		int count = 0;
 		try {
-			Container container = Container.decode(cache.getStore().read(CacheIndex.REFERENCE, CacheIndex.CONFIGS));
-			ReferenceTable table = ReferenceTable.decode(container.getData());
-
+			ReferenceTable table = cache.getReferenceTable(CacheIndex.CONFIGS);
 			Entry entry = table.getEntry(ConfigArchive.STRUCT);
 			Archive archive = Archive.decode(cache.read(CacheIndex.CONFIGS, ConfigArchive.STRUCT).getData(), entry.size());
 			structs = new StructType[entry.capacity()];

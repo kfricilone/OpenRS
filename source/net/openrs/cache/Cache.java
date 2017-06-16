@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014 RSE Studios
+ * Copyright (c) OpenRS
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -56,7 +56,7 @@ public final class Cache implements Closeable {
 	/**
 	 * The list of reference tables for this cache
 	 */
-	private Map<Integer, ReferenceTable> references;
+	private ReferenceTable[] references;
 
 	/**
 	 * Creates a new {@link Cache} backed by the specified {@link FileStore}.
@@ -68,28 +68,29 @@ public final class Cache implements Closeable {
 	public Cache(FileStore store) throws IOException {
 		this.store = store;
 
-		this.references = new HashMap<>(store.getTypeCount());
+		this.references = new ReferenceTable[store.getTypeCount()];
 		
 		for (int type = 0; type < store.getTypeCount(); type++) {
 			ByteBuffer buf = store.read(255, type);
 			if (buf != null && buf.limit() > 0) {
-				this.references.put(type, ReferenceTable.decode(Container.decode(buf, XTEAManager.lookupTable(type)).getData()));
+				references[type] = ReferenceTable.decode(Container.decode(buf, XTEAManager.lookupTable(type)).getData());
 			}
 		}
 	}
 
+	@Override
 	public void close() throws IOException {
 		store.close();
 	}
 
 	public final ReferenceTable getReferenceTable(int type) {
-		return references.get(type);
+		return references[type];
 	}
 
-	public final boolean hasReferenceTable(int type) {
-		return references.containsKey(type);
+	public final ReferenceTable getReferenceTable(CacheIndex index) {
+		return references[index.getID()];
 	}
-
+	
 	/**
 	 * Computes the {@link ChecksumTable} for this cache. The checksum table
 	 * forms part of the so-called "update keys".
@@ -120,7 +121,7 @@ public final class Cache implements Closeable {
 				 */
 				ByteBuffer buf = store.read(255, i);
 				if (buf != null && buf.limit() > 0) {
-					ReferenceTable ref = ReferenceTable.decode(Container.decode(buf).getData());
+					ReferenceTable ref = references[i];
 					crc = ByteBufferUtils.getCrcChecksum(buf);
 					version = ref.getVersion();
 					files = ref.capacity();
@@ -283,23 +284,12 @@ public final class Cache implements Closeable {
 	 */
 	public int getFileId(int type, String name) throws IOException {
 		if (!identifiers.containsKey(name)) {
-			int identifier = Djb2.hash(name);
-			Container container = Container.decode(store.read(255, type));
-			ReferenceTable table = ReferenceTable.decode(container.getData());
-			for (int i = 0; i <= table.capacity(); i++) {
-				Entry e = table.getEntry(i);
-				if (e == null)
-					continue;
-
-				if (e.getIdentifier() == identifier) {
-					identifiers.put(name, i);
-					break;
-				}
-			}
+			ReferenceTable table = references[type];
+			identifiers.put(name, table.getIdentifiers().getFile(Djb2.hash(name)));
 		}
 		
-		Object i = identifiers.get(name);
-		return i == null ? -1 : (int) i;
+		Integer i = identifiers.get(name);
+		return i == null ? -1 : i.intValue();
 	}
 
 	/**
@@ -348,9 +338,9 @@ public final class Cache implements Closeable {
 
 		/* grab the bytes we need for the checksum */
 		ByteBuffer buffer = container.encode(keys);
-		byte[] bytes = new byte[buffer.limit() - 2]; // last two bytes are the
-														// version and shouldn't
-														// be included
+		
+		/* last two bytes are the version and shouldn't be included */
+		byte[] bytes = new byte[buffer.limit() - 2];
 		buffer.mark();
 		try {
 			buffer.position(0);
