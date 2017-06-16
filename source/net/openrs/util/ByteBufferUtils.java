@@ -275,6 +275,48 @@ public final class ByteBufferUtils {
 	    return clone;
 	}
 	
+	public static void putVarInt(ByteBuffer buffer, int var1) {
+		if ((var1 & -128) != 0) {
+			if ((var1 & -16384) != 0) {
+				if ((var1 & -2097152) != 0) {
+					if ((var1 & -268435456) != 0) {
+						buffer.put((byte) (var1 >>> 28 | 128));
+					}
+
+					buffer.put((byte) (var1 >>> 21 | 128));
+				}
+
+				buffer.put((byte) (var1 >>> 14 | 128));
+			}
+
+			buffer.put((byte) (var1 >>> 7 | 128));
+		}
+
+		buffer.put((byte) (var1 & 127));
+	}
+
+	public static void putLengthFromMark(ByteBuffer buffer, int var1) {
+		buffer.array()[buffer.position() - var1 - 4] = (byte) (var1 >> 24);
+		buffer.array()[buffer.position() - var1 - 3] = (byte) (var1 >> 16);
+		buffer.array()[buffer.position() - var1 - 2] = (byte) (var1 >> 8);
+		buffer.array()[buffer.position() - var1 - 1] = (byte) var1;
+	}
+
+	public static int getVarInt(ByteBuffer buffer) {
+		byte var1 = buffer.get();
+
+		int var2;
+		for (var2 = 0; var1 < 0; var1 = buffer.get()) {
+			var2 = (var2 | var1 & 127) << 7;
+		}
+
+		return var2 | var1;
+	}
+
+	public static void skip(ByteBuffer buffer, int skip) {
+		buffer.position(buffer.position() + skip);
+	}
+	
 	/**
 	 * Default private constructor to prevent instantiation.
 	 */
