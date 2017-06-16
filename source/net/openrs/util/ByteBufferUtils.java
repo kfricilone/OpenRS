@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014 RSE Studios
+ * Copyright (c) OpenRS
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -76,7 +76,7 @@ public final class ByteBufferUtils {
 				if (curChar == 0) {
 					curChar = 63;
 				}
-
+				
 				bldr.append(curChar);
 			} else {
 				bldr.append((char) b);
@@ -85,6 +85,7 @@ public final class ByteBufferUtils {
 		return bldr.toString();
 	}
 
+	
 	/**
 	 * Gets a null-terminated string from the specified buffer, using a modified
 	 * ISO-8859-1 character set.
@@ -96,31 +97,32 @@ public final class ByteBufferUtils {
 	public static String getPrefixedString(ByteBuffer buf) {
 		if (buf.get() == 0)
 			return getString(buf);
-
+		
 		return null;
 	}
-
+	
 	/**
-	 * Gets a char from the specified buffer, using a modified ISO-8859-1
-	 * character set.
+	 * Gets a char from the specified buffer, using a modified
+	 * ISO-8859-1 character set.
 	 * 
 	 * @param buf
 	 *            The buffer.
 	 * @return The decoded string.
 	 */
 	public static char getJagexChar(ByteBuffer buf) {
+		StringBuilder bldr = new StringBuilder();
 		int b = buf.get() & 0xFF;
 		if (b >= 127 && b < 160) {
 			char curChar = CHARACTERS[b - 128];
 			if (curChar == 0) {
 				curChar = 63;
 			}
-
+			
 			b = curChar;
 		}
 		return (char) b;
 	}
-
+	
 	/**
 	 * Gets a unsigned smart from the buffer.
 	 * 
@@ -135,7 +137,7 @@ public final class ByteBufferUtils {
 		else
 			return (buf.getShort() & 0xFFFF) - 32768;
 	}
-
+	
 	/**
 	 * Gets a signed smart from the buffer.
 	 * 
@@ -159,7 +161,7 @@ public final class ByteBufferUtils {
 	 * @return The value.
 	 */
 	public static int getSmartInt(ByteBuffer buffer) {
-		if (buffer.get(buffer.position()) < 0)
+		if (buffer.get(buffer.position()) < 0) 
 			return buffer.getInt() & 0x7fffffff;
 		return buffer.getShort() & 0xFFFF;
 	}
@@ -241,10 +243,9 @@ public final class ByteBufferUtils {
 		builder.append("]");
 		return builder.toString();
 	}
-
+	
 	/**
 	 * Puts a 317 format String into the buffer
-	 * 
 	 * @param buffer
 	 * @param text
 	 */
@@ -252,28 +253,28 @@ public final class ByteBufferUtils {
 		buffer.put(val.getBytes());
 		buffer.put((byte) 10);
 	}
-
+	
 	/**
 	 * Clones a bytebuffer
-	 * 
 	 * @param original
 	 * @return
 	 */
 	public static ByteBuffer clone(final ByteBuffer original) {
-		// Create clone with same capacity as original.
-		final ByteBuffer clone = (original.isDirect()) ? ByteBuffer.allocateDirect(original.capacity())
-				: ByteBuffer.allocate(original.capacity());
+	    // Create clone with same capacity as original.
+	    final ByteBuffer clone = (original.isDirect()) ?
+	        ByteBuffer.allocateDirect(original.capacity()) :
+	        ByteBuffer.allocate(original.capacity());
 
-		// Create a read-only copy of the original.
-		// This allows reading from the original without modifying it.
-		final ByteBuffer readOnlyCopy = original.asReadOnlyBuffer();
+	    // Create a read-only copy of the original.
+	    // This allows reading from the original without modifying it.
+	    final ByteBuffer readOnlyCopy = original.asReadOnlyBuffer();
 
-		// Read from the original.
-		clone.put(readOnlyCopy);
+	    // Read from the original.
+	    clone.put(readOnlyCopy);
 
-		return clone;
+	    return clone;
 	}
-
+	
 	public static void putVarInt(ByteBuffer buffer, int var1) {
 		if ((var1 & -128) != 0) {
 			if ((var1 & -16384) != 0) {
@@ -315,7 +316,7 @@ public final class ByteBufferUtils {
 	public static void skip(ByteBuffer buffer, int skip) {
 		buffer.position(buffer.position() + skip);
 	}
-
+	
 	/**
 	 * Default private constructor to prevent instantiation.
 	 */
