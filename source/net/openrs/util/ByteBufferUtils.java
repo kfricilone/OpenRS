@@ -275,42 +275,42 @@ public final class ByteBufferUtils {
 	    return clone;
 	}
 	
-	public static void putVarInt(ByteBuffer buffer, int var1) {
-		if ((var1 & -128) != 0) {
-			if ((var1 & -16384) != 0) {
-				if ((var1 & -2097152) != 0) {
-					if ((var1 & -268435456) != 0) {
-						buffer.put((byte) (var1 >>> 28 | 128));
+	public static void putVarInt(ByteBuffer buffer, int val) {
+		if ((val & 0xFFFFFF80) != 0) {
+			if ((val & 0xFFFFC000) != 0) {
+				if ((val & 0xFFE00000) != 0) {
+					if ((val & 0xF0000000) != 0) {
+						buffer.put((byte) (val >>> 28 | 128));
 					}
 
-					buffer.put((byte) (var1 >>> 21 | 128));
+					buffer.put((byte) (val >>> 21 | 128));
 				}
 
-				buffer.put((byte) (var1 >>> 14 | 128));
+				buffer.put((byte) (val >>> 14 | 128));
 			}
 
-			buffer.put((byte) (var1 >>> 7 | 128));
+			buffer.put((byte) (val >>> 7 | 128));
 		}
 
-		buffer.put((byte) (var1 & 127));
-	}
-
-	public static void putLengthFromMark(ByteBuffer buffer, int var1) {
-		buffer.array()[buffer.position() - var1 - 4] = (byte) (var1 >> 24);
-		buffer.array()[buffer.position() - var1 - 3] = (byte) (var1 >> 16);
-		buffer.array()[buffer.position() - var1 - 2] = (byte) (var1 >> 8);
-		buffer.array()[buffer.position() - var1 - 1] = (byte) var1;
+		buffer.put((byte) (val & 0x7F));
 	}
 
 	public static int getVarInt(ByteBuffer buffer) {
-		byte var1 = buffer.get();
+		byte val = buffer.get();
 
-		int var2;
-		for (var2 = 0; var1 < 0; var1 = buffer.get()) {
-			var2 = (var2 | var1 & 127) << 7;
+		int val_;
+		for (val_ = 0; val < 0; val = buffer.get()) {
+			val_ = (val_ | val & 0x7F) << 7;
 		}
 
-		return var2 | var1;
+		return val_ | val;
+	}
+	
+	public static void putLengthFromMark(ByteBuffer buffer, int length) {
+		int pos = buffer.position();
+		buffer.position(pos - length - 4);
+		buffer.putInt(length);
+		buffer.position(pos);
 	}
 
 	public static void skip(ByteBuffer buffer, int skip) {
