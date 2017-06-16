@@ -61,9 +61,7 @@ public class ObjectTypeList implements TypeList<ObjectType> {
 	public void initialize(Cache cache) {
 		int count = 0;
 		try {
-			Container container = Container.decode(cache.getStore().read(CacheIndex.REFERENCE, CacheIndex.CONFIGS));
-			ReferenceTable table = ReferenceTable.decode(container.getData());
-
+			ReferenceTable table = cache.getReferenceTable(CacheIndex.CONFIGS);
 			Entry entry = table.getEntry(ConfigArchive.OBJECT);
 			Archive archive = Archive.decode(cache.read(CacheIndex.CONFIGS, ConfigArchive.OBJECT).getData(),
 					entry.size());

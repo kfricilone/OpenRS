@@ -35,6 +35,7 @@ import net.openrs.cache.Constants;
 import net.openrs.cache.Container;
 import net.openrs.cache.FileStore;
 import net.openrs.cache.ReferenceTable;
+import net.openrs.cache.type.CacheIndex;
 import net.openrs.cache.type.objects.ObjectType;
 import net.openrs.cache.type.objects.ObjectTypeList;
 
@@ -77,7 +78,7 @@ public class ObjectModelDumper {
 
 			}
 
-			ReferenceTable table = ReferenceTable.decode(Container.decode(cache.getStore().read(255, 7)).getData());
+			ReferenceTable table = cache.getReferenceTable(CacheIndex.MODELS);
 
 			Iterator<Integer> itr = set.iterator();
 			

@@ -47,9 +47,7 @@ public class ModelList {
 	public void initialize(Cache cache) {
 		int count = 0;
 		try {
-			Container container = Container.decode(cache.getStore().read(CacheIndex.REFERENCE, CacheIndex.MODELS));
-			ReferenceTable table = ReferenceTable.decode(container.getData());
-
+			ReferenceTable table = cache.getReferenceTable(CacheIndex.MODELS);
 			models = new Model[table.capacity()];
 			for (int id = 0; id < table.capacity(); id++) {
 				Entry entry = table.getEntry(id);

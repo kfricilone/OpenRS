@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014 RSE Studios
+ * Copyright (c) OpenRS
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -87,6 +87,10 @@ public final class Cache implements Closeable {
 		return references[type];
 	}
 
+	public final ReferenceTable getReferenceTable(CacheIndex index) {
+		return references[index.getID()];
+	}
+	
 	/**
 	 * Computes the {@link ChecksumTable} for this cache. The checksum table
 	 * forms part of the so-called "update keys".
@@ -117,7 +121,7 @@ public final class Cache implements Closeable {
 				 */
 				ByteBuffer buf = store.read(255, i);
 				if (buf != null && buf.limit() > 0) {
-					ReferenceTable ref = ReferenceTable.decode(Container.decode(buf).getData());
+					ReferenceTable ref = references[i];
 					crc = ByteBufferUtils.getCrcChecksum(buf);
 					version = ref.getVersion();
 					files = ref.capacity();
