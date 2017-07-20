@@ -76,9 +76,9 @@ public class AreaType implements Type {
 				anInt1968 = buffer.get() & 0xFF;
 			} else if (opcode == 7) {
 				int flags = buffer.get() & 0xFF;
-				if ((flags & 1) == 0) {
+				if ((flags & 0x1) == 0) {
 				}
-				if ((flags & 2) == 2) {
+				if ((flags & 0x2) == 2) {
 				}
 			} else if (opcode == 8) {
 				buffer.get();

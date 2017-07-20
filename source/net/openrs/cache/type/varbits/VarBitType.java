@@ -24,7 +24,7 @@ package net.openrs.cache.type.varbits;
 import java.nio.ByteBuffer;
 
 import net.openrs.cache.type.Type;
-import net.openrs.util.Masks;
+import net.openrs.util.BitUtils;
 
 /**
  * @author Kyle Friz
@@ -132,7 +132,7 @@ public class VarBitType implements Type {
 	public int set(int oVal, int nVal) {
 		int least = getLeastSigBit();
 		int most = getMostSigBit();
-		int mask = Masks.getMask(most - least);
+		int mask = BitUtils.getMask(most - least);
 		if (nVal < 0 || nVal > mask) {
 			throw new Error("Value out of bit range:" + nVal + ", MAX:" + mask);
 		}
@@ -143,7 +143,7 @@ public class VarBitType implements Type {
 	public int get(int val) {
 		int least = getLeastSigBit();
 		int most = getMostSigBit();
-		int mask = Masks.getMask(most - least);
+		int mask = BitUtils.getMask(most - least);
 		return val >> least & mask;
 	}
 

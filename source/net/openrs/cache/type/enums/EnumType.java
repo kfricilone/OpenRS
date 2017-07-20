@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.openrs.cache.type.Type;
+import net.openrs.util.BitUtils;
 import net.openrs.util.ByteBufferUtils;
 
 /**
@@ -68,7 +69,7 @@ public class EnumType implements Type {
 				defaultInt = buffer.getInt();
 			} else if (opcode == 5) {
 				size = buffer.getShort() & 0xFFFF;
-				params = new HashMap<>(size);
+				params = new HashMap<>(BitUtils.nextPowerOfTwo(size));
 
 				for (int index = 0; index < size; ++index) {
 					int key = buffer.getInt();
@@ -77,7 +78,7 @@ public class EnumType implements Type {
 				}
 			} else if (opcode == 6) {
 				size = buffer.getShort() & 0xFFFF;
-				params = new HashMap<>(size);
+				params = new HashMap<>(BitUtils.nextPowerOfTwo(size));
 
 				for (int index = 0; index < size; ++index) {
 					int key = buffer.getInt();

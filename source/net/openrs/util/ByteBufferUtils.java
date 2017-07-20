@@ -280,16 +280,16 @@ public final class ByteBufferUtils {
 			if ((val & 0xFFFFC000) != 0) {
 				if ((val & 0xFFE00000) != 0) {
 					if ((val & 0xF0000000) != 0) {
-						buffer.put((byte) (val >>> 28 | 128));
+						buffer.put((byte) (val >>> 28 | 0x80));
 					}
 
-					buffer.put((byte) (val >>> 21 | 128));
+					buffer.put((byte) (val >>> 21 | 0x80));
 				}
 
-				buffer.put((byte) (val >>> 14 | 128));
+				buffer.put((byte) (val >>> 14 | 0x80));
 			}
 
-			buffer.put((byte) (val >>> 7 | 128));
+			buffer.put((byte) (val >>> 7 | 0x80));
 		}
 
 		buffer.put((byte) (val & 0x7F));

@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.openrs.cache.type.Type;
+import net.openrs.util.BitUtils;
 import net.openrs.util.ByteBufferUtils;
 
 /**
@@ -262,7 +263,7 @@ public class ObjectType implements Type {
 			} else if (opcode == 249) {
 				int length = buffer.get() & 0xFF;
 
-				params = new HashMap<>(length);
+				params = new HashMap<>(BitUtils.nextPowerOfTwo(length));
 				for (int i = 0; i < length; i++) {
 					boolean isString = (buffer.get() & 0xFF) == 1;
 					int key = ByteBufferUtils.getMedium(buffer);
