@@ -257,7 +257,7 @@ public class MapImageDumper {
         dimX *= PIXELS_PER_TILE;
         dimY *= PIXELS_PER_TILE;
 
-        for (int z = Z_MIN; z <= Z_MAX; z ++ ) {
+        for (int z = Z_MIN; z <= Z_MAX; z++) {
             System.out.println("Generating map images for z = " + z);
 
             BufferedImage baseImage = BigBufferedImage.create(dimX, dimY, BufferedImage.TYPE_INT_RGB);
@@ -398,6 +398,15 @@ public class MapImageDumper {
                     int drawY = drawBaseY + ((Region.HEIGHT - 1) - y);
 
                     int overlayId = region.getOverlayId(z, x, y) - 1;
+
+                    if (region.isBridgeTile(z, x, y)) { // If this is a bridge
+                        if (z == 0) { // Only draw bridges on plane 0
+                            overlayId = region.getOverlayId(1, x, y) - 1;
+                        } else {
+                            continue;
+                        }
+                    }
+
                     int rgb = -1;
 
                     if (overlayId > -1) {
@@ -406,22 +415,6 @@ public class MapImageDumper {
 
                     if (rgb > -1) {
                         drawMapSquare(image, drawX, drawY, rgb, region.getOverlayPath(z, x, y), region.getOverlayRotation(z, x, y));
-                    }
-
-                    if (z == 0) {
-                        byte renderRule = region.getRenderRule(1, x, y);
-
-                        // If this is a bridge
-                        if ((renderRule & 0x2) != 0) {
-                            overlayId = region.getOverlayId(1, x, y) - 1;
-                            if (overlayId > -1) {
-                                rgb = getOverLayColour(overlayId);
-
-                                if (rgb > -1) {
-                                    drawMapSquare(image, drawX, drawY, rgb, region.getOverlayPath(z, x, y), region.getOverlayRotation(z, x, y));
-                                }
-                            }
-                        }
                     }
                 }
             }
@@ -465,11 +458,8 @@ public class MapImageDumper {
                 int localX = location.getPosition().getX() - region.getBaseX();
                 int localY = location.getPosition().getY() - region.getBaseY();
 
-                if (z == 0 && location.getPosition().getHeight() != 0) {
-                    byte renderRule = region.getRenderRule(1, localX, localY);
-
-                    // If this is not a bridge
-                    if ((renderRule & 0x2) == 0) {
+                if (region.isBridgeTile(z, localX, localY)) {
+                    if (z != 0) { // Only draw bridges on plane 0
                         continue;
                     }
                 } else if (z != location.getPosition().getHeight()) {
@@ -502,11 +492,8 @@ public class MapImageDumper {
                 int localX = location.getPosition().getX() - region.getBaseX();
                 int localY = location.getPosition().getY() - region.getBaseY();
 
-                if (z == 0 && location.getPosition().getHeight() != 0) {
-                    byte renderRule = region.getRenderRule(location.getPosition().getHeight(), localX, localY);
-
-                    // If this is not a bridge
-                    if ((renderRule & 0x2) == 0) {
+                if (region.isBridgeTile(z, localX, localY)) {
+                    if (z != 0) { // Only draw bridges on plane 0
                         continue;
                     }
                 } else if (z != location.getPosition().getHeight()) {
@@ -520,7 +507,9 @@ public class MapImageDumper {
                     continue;
                 }
 
-                if (objType.getName().contains("Door")) {
+                String objName = objType.getName().toLowerCase();
+
+                if (objName.contains("door") || objName.contains("gate")) {
                     graphics.setColor(Color.RED);
                 }
 

@@ -196,7 +196,11 @@ public class Region {
 	public final int getUnderlayId(final int z, final int x, final int y) {
 		return underlayIds[z][x][y] & 0xFF;
 	}
-	
+
+	public final boolean isBridgeTile(final int z, final int x, final int y) {
+		return (getRenderRule(1, x, y) & 0x2) != 0;
+	}
+
 	/**
 	 * @return the locations
 	 */
