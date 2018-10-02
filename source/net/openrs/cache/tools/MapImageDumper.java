@@ -181,6 +181,8 @@ public class MapImageDumper {
     private static final boolean OUTLINE = true;
     private static final boolean FILL = true;
 
+    private static final int Z_MIN = 0, Z_MAX = 3;
+
     private void initialize(final Cache cache) throws IOException {
         TypeListManager.initialize(cache);
         Textures.initialize(cache);
@@ -255,39 +257,54 @@ public class MapImageDumper {
         dimX *= PIXELS_PER_TILE;
         dimY *= PIXELS_PER_TILE;
 
-        BufferedImage baseImage = BigBufferedImage.create(dimX, dimY, BufferedImage.TYPE_INT_RGB);
-        BufferedImage fullImage = BigBufferedImage.create(dimX, dimY, BufferedImage.TYPE_INT_RGB);
+        for (int z = Z_MIN; z <= Z_MAX; z ++ ) {
+            System.out.println("Generating map images for z = " + z);
 
-        Graphics2D graphics = fullImage.createGraphics();
+            BufferedImage baseImage = BigBufferedImage.create(dimX, dimY, BufferedImage.TYPE_INT_RGB);
+            BufferedImage fullImage = BigBufferedImage.create(dimX, dimY, BufferedImage.TYPE_INT_RGB);
 
-        graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-        graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        graphics.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+            Graphics2D graphics = fullImage.createGraphics();
 
-        drawUnderlay(baseImage);
-        blendUnderlay(baseImage, fullImage, boundX, boundY);
-        drawOverlay(fullImage);
-        drawLocations(graphics);
+            graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+            graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+            graphics.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
 
-        if (DRAW_WALLS) {
-            drawWalls(graphics);
+            System.out.println("Drawing underlay");
+            drawUnderlay(z, baseImage);
+
+            System.out.println("Blending underlay");
+            blendUnderlay(z, baseImage, fullImage, boundX, boundY);
+
+            System.out.println("Drawing overlay");
+            drawOverlay(z, fullImage);
+
+            System.out.println("Drawing locations");
+            drawLocations(z, graphics);
+
+            if (DRAW_WALLS) {
+                System.out.println("Drawing walls");
+                drawWalls(z, graphics);
+            }
+
+            if (DRAW_ICONS) {
+                System.out.println("Drawing icons");
+                drawIcons(z, graphics);
+            }
+
+            if (DRAW_REGIONS) {
+                System.out.println("Drawing regions");
+                drawRegions(z, graphics);
+            }
+
+            graphics.dispose();
+
+            System.out.println("Writing to files");
+            ImageIO.write(baseImage, "png", new File("base_image_" + z + ".png"));
+            ImageIO.write(fullImage, "png", new File("full_image_" + z + ".png"));
         }
-
-        if (DRAW_ICONS) {
-            drawIcons(graphics);
-        }
-
-        if (DRAW_REGIONS) {
-            drawRegions(graphics);
-        }
-
-        graphics.dispose();
-
-        ImageIO.write(baseImage, "png", new File("base_image.png"));
-        ImageIO.write(fullImage, "png", new File("full_image.png"));
     }
 
-    private void drawUnderlay(BufferedImage image) {
+    private void drawUnderlay(int z, BufferedImage image) {
         for (Region region : regions) {
             int baseX = region.getBaseX();
             int baseY = region.getBaseY();
@@ -300,7 +317,7 @@ public class MapImageDumper {
                 for (int y = 0; y < Region.HEIGHT; ++y) {
                     int drawY = drawBaseY + ((Region.HEIGHT - 1) - y);
 
-                    int underlayId = region.getUnderlayId(0, x, y) - 1;
+                    int underlayId = region.getUnderlayId(z, x, y) - 1;
 
                     int rgb = Color.CYAN.getRGB();
 
@@ -315,7 +332,7 @@ public class MapImageDumper {
         }
     }
 
-    private void blendUnderlay(BufferedImage baseImage, BufferedImage fullImage, int boundX, int boundY) {
+    private void blendUnderlay(int z, BufferedImage baseImage, BufferedImage fullImage, int boundX, int boundY) {
         for (Region region : regions) {
             int baseX = region.getBaseX();
             int baseY = region.getBaseY();
@@ -367,7 +384,7 @@ public class MapImageDumper {
         }
     }
 
-    private void drawOverlay(BufferedImage image) {
+    private void drawOverlay(int z, BufferedImage image) {
         for (Region region : regions) {
             int baseX = region.getBaseX();
             int baseY = region.getBaseY();
@@ -380,7 +397,7 @@ public class MapImageDumper {
                 for (int y = 0; y < Region.HEIGHT; ++y) {
                     int drawY = drawBaseY + ((Region.HEIGHT - 1) - y);
 
-                    int overlayId = region.getOverlayId(0, x, y) - 1;
+                    int overlayId = region.getOverlayId(z, x, y) - 1;
                     int rgb = -1;
 
                     if (overlayId > -1) {
@@ -388,19 +405,21 @@ public class MapImageDumper {
                     }
 
                     if (rgb > -1) {
-                        drawMapSquare(image, drawX, drawY, rgb, region.getOverlayPath(0, x, y), region.getOverlayRotation(0, x, y));
+                        drawMapSquare(image, drawX, drawY, rgb, region.getOverlayPath(z, x, y), region.getOverlayRotation(z, x, y));
                     }
 
-                    byte renderRule = region.getRenderRule(1, x, y);
+                    if (z == 0) {
+                        byte renderRule = region.getRenderRule(1, x, y);
 
-                    // If this is a bridge
-                    if ((renderRule & 0x2) != 0) {
-                        overlayId = region.getOverlayId(1, x, y) - 1;
-                        if (overlayId > -1) {
-                            rgb = getOverLayColour(overlayId);
+                        // If this is a bridge
+                        if ((renderRule & 0x2) != 0) {
+                            overlayId = region.getOverlayId(1, x, y) - 1;
+                            if (overlayId > -1) {
+                                rgb = getOverLayColour(overlayId);
 
-                            if (rgb > -1) {
-                                drawMapSquare(image, drawX, drawY, rgb, region.getOverlayPath(0, x, y), region.getOverlayRotation(0, x, y));
+                                if (rgb > -1) {
+                                    drawMapSquare(image, drawX, drawY, rgb, region.getOverlayPath(z, x, y), region.getOverlayRotation(z, x, y));
+                                }
                             }
                         }
                     }
@@ -435,7 +454,7 @@ public class MapImageDumper {
         return rgb;
     }
 
-    private void drawLocations(Graphics2D graphics) {
+    private void drawLocations(int z, Graphics2D graphics) {
         for (Region region : regions) {
             int baseX = region.getBaseX();
             int baseY = region.getBaseY();
@@ -446,13 +465,15 @@ public class MapImageDumper {
                 int localX = location.getPosition().getX() - region.getBaseX();
                 int localY = location.getPosition().getY() - region.getBaseY();
 
-                if (location.getPosition().getHeight() != 0) {
+                if (z == 0 && location.getPosition().getHeight() != 0) {
                     byte renderRule = region.getRenderRule(1, localX, localY);
 
                     // If this is not a bridge
                     if ((renderRule & 0x2) == 0) {
                         continue;
                     }
+                } else if (z != location.getPosition().getHeight()) {
+                    continue;
                 }
 
                 ObjectType objType = TypeListManager.lookupObject(location.getId());
@@ -468,7 +489,7 @@ public class MapImageDumper {
         }
     }
 
-    private void drawWalls(Graphics2D graphics) {
+    private void drawWalls(int z, Graphics2D graphics) {
         for (Region region : regions) {
             int baseX = region.getBaseX();
             int baseY = region.getBaseY();
@@ -481,13 +502,15 @@ public class MapImageDumper {
                 int localX = location.getPosition().getX() - region.getBaseX();
                 int localY = location.getPosition().getY() - region.getBaseY();
 
-                if (location.getPosition().getHeight() != 0) {
+                if (z == 0 && location.getPosition().getHeight() != 0) {
                     byte renderRule = region.getRenderRule(location.getPosition().getHeight(), localX, localY);
 
                     // If this is not a bridge
                     if ((renderRule & 0x2) == 0) {
                         continue;
                     }
+                } else if (z != location.getPosition().getHeight()) {
+                    continue;
                 }
 
                 ObjectType objType = TypeListManager.lookupObject(location.getId());
@@ -552,7 +575,7 @@ public class MapImageDumper {
         }
     }
 
-    private void drawIcons(Graphics2D graphics) {
+    private void drawIcons(int z, Graphics2D graphics) {
         for (Region region : regions) {
             int baseX = region.getBaseX();
             int baseY = region.getBaseY();
@@ -560,7 +583,7 @@ public class MapImageDumper {
             int drawBaseY = highestY.getBaseY() - baseY;
 
             for (Location location : region.getLocations()) {
-                if (location.getPosition().getHeight() != 0) {
+                if (z != location.getPosition().getHeight()) {
                     continue;
                 }
 
@@ -581,7 +604,7 @@ public class MapImageDumper {
         }
     }
 
-    private void drawRegions(Graphics2D graphics) {
+    private void drawRegions(int z, Graphics2D graphics) {
         for (Region region : regions) {
             int baseX = region.getBaseX();
             int baseY = region.getBaseY();
@@ -651,7 +674,7 @@ public class MapImageDumper {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - ms));
+        System.out.println("Time taken: " + TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - ms) + "s");
     }
 
 }
