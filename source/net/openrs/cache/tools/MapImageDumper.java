@@ -306,10 +306,8 @@ public class MapImageDumper {
 
     private void drawUnderlay(int z, BufferedImage image) {
         for (Region region : regions) {
-            int baseX = region.getBaseX();
-            int baseY = region.getBaseY();
-            int drawBaseX = baseX - lowestX.getBaseX();
-            int drawBaseY = highestY.getBaseY() - baseY;
+            int drawBaseX = region.getBaseX() - lowestX.getBaseX();
+            int drawBaseY = highestY.getBaseY() - region.getBaseY();
 
             for (int x = 0; x < Region.WIDTH; ++x) {
                 int drawX = drawBaseX + x;
@@ -334,10 +332,8 @@ public class MapImageDumper {
 
     private void blendUnderlay(int z, BufferedImage baseImage, BufferedImage fullImage, int boundX, int boundY) {
         for (Region region : regions) {
-            int baseX = region.getBaseX();
-            int baseY = region.getBaseY();
-            int drawBaseX = baseX - lowestX.getBaseX();
-            int drawBaseY = highestY.getBaseY() - baseY;
+            int drawBaseX = region.getBaseX() - lowestX.getBaseX();
+            int drawBaseY = highestY.getBaseY() - region.getBaseY();
 
             for (int x = 0; x < Region.WIDTH; ++x) {
                 int drawX = drawBaseX + x;
@@ -386,10 +382,8 @@ public class MapImageDumper {
 
     private void drawOverlay(int z, BufferedImage image) {
         for (Region region : regions) {
-            int baseX = region.getBaseX();
-            int baseY = region.getBaseY();
-            int drawBaseX = baseX - lowestX.getBaseX();
-            int drawBaseY = highestY.getBaseY() - baseY;
+            int drawBaseX = region.getBaseX() - lowestX.getBaseX();
+            int drawBaseY = highestY.getBaseY() - region.getBaseY();
 
             for (int x = 0; x < Region.WIDTH; ++x) {
                 int drawX = drawBaseX + x;
@@ -397,24 +391,20 @@ public class MapImageDumper {
                 for (int y = 0; y < Region.HEIGHT; ++y) {
                     int drawY = drawBaseY + ((Region.HEIGHT - 1) - y);
 
-                    int overlayId = region.getOverlayId(z, x, y) - 1;
-
-                    if (region.isBridgeTile(z, x, y)) { // If this is a bridge
-                        if (z == 0) { // Only draw bridges on plane 0
-                            overlayId = region.getOverlayId(1, x, y) - 1;
-                        } else {
-                            continue;
+                    if (z == 0 || (!region.isLinkedBelow(z, x, y) && !region.isVisibleBelow(z, x, y))) {
+                        int overlayId = region.getOverlayId(z, x, y) - 1;
+                        if (overlayId > -1) {
+                            int rgb = getOverLayColour(overlayId);
+                            drawMapSquare(image, drawX, drawY, rgb, region.getOverlayPath(z, x, y), region.getOverlayRotation(z, x, y));
                         }
                     }
 
-                    int rgb = -1;
-
-                    if (overlayId > -1) {
-                        rgb = getOverLayColour(overlayId);
-                    }
-
-                    if (rgb > -1) {
-                        drawMapSquare(image, drawX, drawY, rgb, region.getOverlayPath(z, x, y), region.getOverlayRotation(z, x, y));
+                    if (z < 3 && (region.isLinkedBelow(z + 1, x, y) || region.isVisibleBelow(z + 1, x, y))) {
+                        int overlayAboveId = region.getOverlayId(z + 1, x, y) - 1;
+                        if (overlayAboveId > -1) {
+                            int rgb = getOverLayColour(overlayAboveId);
+                            drawMapSquare(image, drawX, drawY, rgb, region.getOverlayPath(z + 1, x, y), region.getOverlayRotation(z + 1, x, y));
+                        }
                     }
                 }
             }
@@ -422,13 +412,9 @@ public class MapImageDumper {
     }
 
     private int getOverLayColour(int overlayID) {
-        if (overlayID < 0) {
-            return -1;
-        }
-
         OverlayType overlay = TypeListManager.lookupOver(overlayID);
 
-        int rgb = -1;
+        int rgb = 0;
 
         if (overlay.isHideUnderlay()) {
             rgb = overlay.getRgbColor();
@@ -449,20 +435,14 @@ public class MapImageDumper {
 
     private void drawLocations(int z, Graphics2D graphics) {
         for (Region region : regions) {
-            int baseX = region.getBaseX();
-            int baseY = region.getBaseY();
-            int drawBaseX = baseX - lowestX.getBaseX();
-            int drawBaseY = highestY.getBaseY() - baseY;
+            int drawBaseX = region.getBaseX() - lowestX.getBaseX();
+            int drawBaseY = highestY.getBaseY() - region.getBaseY();
 
             for (Location location : region.getLocations()) {
                 int localX = location.getPosition().getX() - region.getBaseX();
                 int localY = location.getPosition().getY() - region.getBaseY();
 
-                if (region.isBridgeTile(z, localX, localY)) {
-                    if (z != 0) { // Only draw bridges on plane 0
-                        continue;
-                    }
-                } else if (z != location.getPosition().getHeight()) {
+                if (!canDrawLocation(region, location, z, localX, localY)) {
                     continue;
                 }
 
@@ -481,10 +461,8 @@ public class MapImageDumper {
 
     private void drawWalls(int z, Graphics2D graphics) {
         for (Region region : regions) {
-            int baseX = region.getBaseX();
-            int baseY = region.getBaseY();
-            int drawBaseX = baseX - lowestX.getBaseX();
-            int drawBaseY = highestY.getBaseY() - baseY;
+            int drawBaseX = region.getBaseX() - lowestX.getBaseX();
+            int drawBaseY = highestY.getBaseY() - region.getBaseY();
 
             for (Location location : region.getLocations()) {
                 graphics.setColor(Color.WHITE);
@@ -492,11 +470,7 @@ public class MapImageDumper {
                 int localX = location.getPosition().getX() - region.getBaseX();
                 int localY = location.getPosition().getY() - region.getBaseY();
 
-                if (region.isBridgeTile(z, localX, localY)) {
-                    if (z != 0) { // Only draw bridges on plane 0
-                        continue;
-                    }
-                } else if (z != location.getPosition().getHeight()) {
+                if (!canDrawLocation(region, location, z, localX, localY)) {
                     continue;
                 }
 
@@ -566,20 +540,18 @@ public class MapImageDumper {
 
     private void drawIcons(int z, Graphics2D graphics) {
         for (Region region : regions) {
-            int baseX = region.getBaseX();
-            int baseY = region.getBaseY();
-            int drawBaseX = baseX - lowestX.getBaseX();
-            int drawBaseY = highestY.getBaseY() - baseY;
+            int drawBaseX = region.getBaseX() - lowestX.getBaseX();
+            int drawBaseY = highestY.getBaseY() - region.getBaseY();
 
             for (Location location : region.getLocations()) {
-                if (z != location.getPosition().getHeight()) {
+                int localX = location.getPosition().getX() - region.getBaseX();
+                int localY = location.getPosition().getY() - region.getBaseY();
+
+                if (!canDrawLocation(region, location, z, localX, localY)) {
                     continue;
                 }
 
                 ObjectType objType = TypeListManager.lookupObject(location.getId());
-
-                int localX = location.getPosition().getX() - region.getBaseX();
-                int localY = location.getPosition().getY() - region.getBaseY();
 
                 int drawX = drawBaseX + localX;
                 int drawY = drawBaseY + (63 - localY);
@@ -591,6 +563,18 @@ public class MapImageDumper {
                 }
             }
         }
+    }
+
+    private boolean canDrawLocation(Region region, Location location, int z, int x, int y) {
+        if (region.isLinkedBelow(z, x, y) || region.isVisibleBelow(z, x, y)) {
+            return false;
+        }
+
+        if (location.getPosition().getHeight() == z + 1 && (region.isLinkedBelow(z + 1, x, y) || region.isVisibleBelow(z + 1, x, y))) {
+            return true;
+        }
+
+        return z == location.getPosition().getHeight();
     }
 
     private void drawRegions(int z, Graphics2D graphics) {
@@ -616,7 +600,6 @@ public class MapImageDumper {
                     graphics.fillRect(drawBaseX * PIXELS_PER_TILE, drawBaseY * PIXELS_PER_TILE, 64 * PIXELS_PER_TILE, 64 * PIXELS_PER_TILE);
                 }
             }
-
         }
     }
 
