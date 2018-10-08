@@ -34,6 +34,9 @@ import net.openrs.util.ByteBufferUtils;
  */
 public class Region {
 
+	public static final int WIDTH = 64;
+	public static final int HEIGHT = 64;
+
 	private final int regionID;
 	private final int baseX;
 	private final int baseY;
@@ -56,7 +59,7 @@ public class Region {
 	/**
 	 * Decodes terrain data stored in the specified {@link ByteBuffer}.
 	 *
-	 * @param buffer
+	 * @param buf
 	 *            The ByteBuffer.
 	 */
 	public void loadTerrain(ByteBuffer buf) {
@@ -102,7 +105,7 @@ public class Region {
 	/**
 	 * Decodes location data stored in the specified {@link ByteBuffer}.
 	 *
-	 * @param buffer
+	 * @param buf
 	 *            The ByteBuffer.
 	 */
 	public void loadLocations(ByteBuffer buf) {
@@ -193,7 +196,15 @@ public class Region {
 	public final int getUnderlayId(final int z, final int x, final int y) {
 		return underlayIds[z][x][y] & 0xFF;
 	}
-	
+
+	public final boolean isLinkedBelow(final int z, final int x, final int y) {
+		return (getRenderRule(z, x, y) & 0x2) != 0;
+	}
+
+	public final boolean isVisibleBelow(final int z, final int x, final int y) {
+		return (getRenderRule(z, x, y) & 0x8) != 0;
+	}
+
 	/**
 	 * @return the locations
 	 */
