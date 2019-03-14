@@ -444,6 +444,7 @@ public class ReferenceTable {
 		}
 
 		/* read the child ids */
+		int[][] identifiers = new int[members.length][];
 		for (int id : ids) {
 			/* reset the accumulator and size */
 			accumulator = 0;
@@ -459,6 +460,8 @@ public class ReferenceTable {
 			}
 			size++;
 
+			identifiers[id] = new int[size];
+
 			/* and allocate specific entries within the array */
 			index = 0;
 			for (int child : members[id]) {
@@ -469,13 +472,12 @@ public class ReferenceTable {
 		/* read the child identifiers if present */
 		if ((table.flags & FLAG_IDENTIFIERS) != 0) {
 			for (int id : ids) {
-				identifiersArray = new int[members[id].length];
 				for (int child : members[id]) {
 					int identifier = buffer.getInt();
-					identifiersArray[child] = identifier;
+					identifiers[id][child] = identifier;
 					table.entries.get(id).entries.get(child).identifier = identifier;
 				}
-				table.entries.get(id).identifiers = new Identifiers(identifiersArray);
+				table.entries.get(id).identifiers = new Identifiers(identifiers[id]);
 			}
 		}
 
